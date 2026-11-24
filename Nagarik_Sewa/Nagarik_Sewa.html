@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nagarik Sewa Kendra - Digital Nepal e-Governance Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nepalRed: '#DC143C',
+                        nepalBlue: '#003893',
+                        nepalGold: '#FFD700',
+                        darkSlate: '#1E293B',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS for animations and styling -->
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    
+        .prototype-note { font-size: 11px; line-height: 1.5; }
+        .status-step { position: relative; }
+        .status-step:not(:last-child)::after { content: ''; position: absolute; top: 18px; left: calc(50% + 18px); right: calc(-50% + 18px); height: 2px; background: #e2e8f0; }
+        @media (max-width: 640px) { .status-step:not(:last-child)::after { display:none; } }
+</style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col justify-between selection:bg-nepalRed selection:text-white">
+
+    <!-- Top Government Ribbon -->
+    <div class="bg-darkSlate text-slate-300 text-xs py-2 px-4 border-b border-slate-700">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center space-x-3">
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-nepalRed text-white">
+                    <i class="fa-solid fa-shield-halved mr-1"></i> Academic Prototype
+                </span>
+                <span>B.Sc. CSIT Project | Not an official Government of Nepal portal</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="hover:text-white transition cursor-pointer"><i class="fa-solid fa-phone mr-1 text-nepalGold"></i> Helpline: 1151 / 01-4200000</span>
+                <!-- Auth Status Display in Ribbon -->
+                <div id="authRibbonStatus" class="flex items-center space-x-3 font-medium">
+                    <!-- Dynamic auth info -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-white shadow-md border-b-4 border-nepalRed">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
+            <!-- Brand / Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="handleLogoClick()">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-nepalBlue to-nepalRed flex items-center justify-center text-white shadow-lg">
+                    <i class="fa-solid fa-landmark text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-xl sm:text-2xl text-slate-900 tracking-tight flex items-center gap-2">
+                        <span>नागरिक सेवा केन्द्र</span>
+                        <span class="text-xs bg-nepalBlue text-white px-2 py-0.5 rounded-full uppercase tracking-wider font-semibold">e-Gov</span>
+                    </h1>
+                    <p class="text-xs text-slate-500 font-medium">Nagarik Sewa Kendra • Citizen Service Hub</p>
+                </div>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="flex items-center gap-2 mr-2"><button onclick="toggleLanguage()" id="languageToggle" class="px-3 py-2 rounded-lg text-xs font-bold border border-slate-300 text-slate-700 hover:bg-slate-100 transition">नेपाली / English</button></div>
+            <nav class="hidden md:flex items-center space-x-2" id="desktopNav">
+                <!-- Dynamically rendered based on login state -->
+            </nav>
+
+            <!-- Mobile Menu Toggle Button -->
+            <div class="flex md:hidden items-center space-x-2">
+                <button onclick="toggleMobileMenu()" class="p-2 text-slate-700 hover:text-nepalRed focus:outline-none">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-slate-200 px-4 pt-2 pb-4 space-y-2 shadow-lg animate-fade-in">
+            <!-- Populated via JS -->
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        
+        <!-- VIEW 1: LANDING & OVERVIEW -->
+        <div id="view-landing" class="view-section animate-fade-in">
+            <!-- Hero Banner -->
+            <div class="relative bg-gradient-to-r from-darkSlate via-slate-900 to-nepalBlue text-white py-16 sm:py-24 px-4 overflow-hidden">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#FFD700_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <div class="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-nepalRed/30 border border-nepalRed/50 text-nepalGold text-xs font-semibold tracking-wide uppercase">
+                            <i class="fa-solid fa-bolt"></i> Digital Nepal Framework Initiative
+                        </div>
+                        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+                            Government Services / सरकारी सेवाहरू, <br><span class="text-nepalGold">Now at Your Fingertips / अब तपाईंको हातमा।</span>
+                        </h1>
+                        <p class="text-slate-300 text-lg sm:text-xl font-light leading-relaxed max-w-2xl">
+                            Welcome to <strong>Nagarik Sewa Kendra</strong>. Experience transparent, organized, and convenient municipal service delivery. Submit requests for official certificates online, track statuses in real-time, and eliminate unnecessary in-person queues.
+                        </p>
+                        <div class="flex flex-wrap gap-4 pt-4">
+                            <button onclick="openAuthModal('citizen')" class="bg-nepalRed hover:bg-red-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-3 text-base">
+                                <i class="fa-solid fa-user text-xl"></i> Citizen Portal Login
+                            </button>
+                            <button onclick="openAuthModal('admin')" class="bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold px-6 py-4 rounded-xl backdrop-blur transition flex items-center gap-3 text-base">
+                                <i class="fa-solid fa-user-tie text-xl"></i> Officer / Admin Login
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Stats Widget Box -->
+                    <div class="lg:col-span-5 bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 shadow-2xl space-y-6">
+                        <h3 class="text-lg font-bold text-nepalGold flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line"></i> Live Governance Metrics
+                        </h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+                                <p class="text-xs text-slate-300">Total Requests</p>
+                                <p id="statTotal" class="text-3xl font-extrabold text-white mt-1">0</p>
+                                <span class="text-[10px] text-emerald-400 font-medium"><i class="fa-solid fa-arrow-up"><b> Live Registry</b></i></span>
+                            </div>
+                            <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+                                <p class="text-xs text-slate-300">Pending Review</p>
+                                <p id="statPending" class="text-3xl font-extrabold text-nepalGold mt-1">0</p>
+                                <span class="text-[10px] text-amber-300 font-medium"><i class="fa-solid fa-clock"></i> Action required</span>
+                            </div>
+                            <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+                                <p class="text-xs text-slate-300">Approved & Issued</p>
+                                <p id="statApproved" class="text-3xl font-extrabold text-emerald-400 mt-1">0</p>
+                                <span class="text-[10px] text-emerald-400 font-medium"><i class="fa-solid fa-check"></i> Approved by officer</span>
+                            </div>
+                            <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+                                <p class="text-xs text-slate-300">Open Grievances</p><p id="statGrievances" class="text-3xl font-extrabold text-sky-400 mt-1">0</p><span class="text-[10px] text-sky-300 font-medium"><i class="fa-solid fa-comment-dots"></i> Awaiting response</span>
+                            </div>
+                        </div>
+                        <div class="pt-2 border-t border-white/10 flex justify-between items-center text-xs text-slate-300">
+                            <span><i class="fa-solid fa-circle text-emerald-400 text-[8px] mr-1"></i> System Operational</span>
+                            <span>Browser-based prototype data</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features & Services Grid -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" id="services">
+                <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+                    <span class="text-nepalRed font-bold text-sm tracking-wider uppercase">Municipal Services Available</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Available Digital Document Services / उपलब्ध डिजिटल कागजात सेवाहरू</h2>
+                    <p class="text-slate-600 text-base">Login as a citizen to submit and manage applications or login as an officer to review and issue approvals.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div onclick="openServiceDetails(\'National Identity Card (NID)\')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-nepalRed/50 transition cursor-pointer group">
+                        <div class="w-14 h-14 rounded-xl bg-red-50 text-nepalRed flex items-center justify-center text-2xl mb-6 group-hover:bg-nepalRed group-hover:text-white transition">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-nepalRed transition">National Identity Card</h3>
+                        <p class="text-slate-600 text-sm mb-6">Biometric national identity registration, renewal, and replacement requests.</p>
+                        <div class="flex items-center text-nepalRed font-semibold text-sm">
+                            <span>View Requirements & Apply</span> <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="openServiceDetails(\'Birth Registration\')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-nepalRed/50 transition cursor-pointer group">
+                        <div class="w-14 h-14 rounded-xl bg-blue-50 text-nepalBlue flex items-center justify-center text-2xl mb-6 group-hover:bg-nepalBlue group-hover:text-white transition">
+                            <i class="fa-solid fa-baby"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-nepalBlue transition">Birth Registration Certificate</h3>
+                        <p class="text-slate-600 text-sm mb-6">Official local ward office birth registration for newborns and delayed records.</p>
+                        <div class="flex items-center text-nepalBlue font-semibold text-sm">
+                            <span>View Requirements & Apply</span> <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="openServiceDetails(\'Citizenship Certificate Verification\')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-nepalRed/50 transition cursor-pointer group">
+                        <div class="w-14 h-14 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl mb-6 group-hover:bg-amber-600 group-hover:text-white transition">
+                            <i class="fa-solid fa-address-card"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-amber-600 transition">Citizenship Verification</h3>
+                        <p class="text-slate-600 text-sm mb-6">District Administration Office (DAO) citizenship document verification and certified copies.</p>
+                        <div class="flex items-center text-amber-600 font-semibold text-sm">
+                            <span>View Requirements & Apply</span> <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="openServiceDetails(\'Business License Registration\')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-nepalRed/50 transition cursor-pointer group">
+                        <div class="w-14 h-14 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mb-6 group-hover:bg-emerald-600 group-hover:text-white transition">
+                            <i class="fa-solid fa-store"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-emerald-600 transition">Business & Trade License</h3>
+                        <p class="text-slate-600 text-sm mb-6">Municipal enterprise registration, renewal, and small business permits.</p>
+                        <div class="flex items-center text-emerald-600 font-semibold text-sm">
+                            <span>View Requirements & Apply</span> <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="openServiceDetails(\'Land Ownership Record (Lalpurja)\')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-nepalRed/50 transition cursor-pointer group">
+                        <div class="w-14 h-14 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-2xl mb-6 group-hover:bg-purple-600 group-hover:text-white transition">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-purple-600 transition">Land Ownership (Lalpurja)</h3>
+                        <p class="text-slate-600 text-sm mb-6">Malpot (Land Revenue Office) records verification and ownership transcript extracts.</p>
+                        <div class="flex items-center text-purple-600 font-semibold text-sm">
+                            <span>View Requirements & Apply</span> <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+
+                    <div onclick="openServiceDetails(\'Character Certificate / Police Report\')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 hover:shadow-xl hover:border-nepalRed/50 transition cursor-pointer group">
+                        <div class="w-14 h-14 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-2xl mb-6 group-hover:bg-sky-600 group-hover:text-white transition">
+                            <i class="fa-solid fa-file-shield"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-sky-600 transition">Police Character Certificate</h3>
+                        <p class="text-slate-600 text-sm mb-6">Nepal Police clearance certificate for employment, study abroad, and visa processing.</p>
+                        <div class="flex items-center text-sky-600 font-semibold text-sm">
+                            <span>View Requirements & Apply</span> <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: CITIZEN PORTAL (USER DASHBOARD) -->
+        <div id="view-citizen" class="view-section hidden animate-fade-in py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div>
+                    <span class="text-xs uppercase font-bold text-nepalRed tracking-wider" id="citizenWelcomeBanner">Citizen Portal</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Request & Track Government Documents / सरकारी कागजात अनुरोध तथा ट्र्याक</h2>
+                    <p class="text-slate-600 text-sm mt-1">Submit new document applications, modify pending requests, or download approved digital certificates.</p>
+                </div>
+                <div class="flex bg-slate-100 p-1 rounded-xl">
+                    <button onclick="switchCitizenTab('apply')" id="tab-apply" class="px-5 py-2 rounded-lg font-semibold text-sm bg-white text-nepalRed shadow-sm transition">
+                        <i class="fa-solid fa-plus-circle mr-2"></i> New Request / नयाँ अनुरोध
+                    </button>
+                    <button onclick="switchCitizenTab('tracker')" id="tab-tracker" class="px-5 py-2 rounded-lg font-semibold text-sm text-slate-600 hover:text-slate-900 transition">
+                        <i class="fa-solid fa-list-check mr-2"></i> My Applications / मेरा आवेदन (<span id="trackerCount">0</span>)
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 1: NEW APPLICATION WIZARD -->
+            <div id="citizen-tab-apply" class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-gradient-to-r from-nepalBlue to-slate-900 text-white p-6">
+                        <h3 id="formWizardTitle" class="text-lg font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-file-pen text-nepalGold"></i> Official Government Document Request Form / सरकारी कागजात अनुरोध फारम
+                        </h3>
+                        <p class="text-xs text-slate-300 mt-1">Please fill in your authentic details as per your Nepali Citizenship Certificate. / नेपाली नागरिकता प्रमाणपत्रअनुसार सही विवरण भर्नुहोस्।</p>
+                    </div>
+
+                    <form id="documentForm" novalidate onsubmit="handleFormSubmit(event)" class="p-6 sm:p-8 space-y-6">
+                        <input type="hidden" id="editAppId" value="">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Document Type -->
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Select Document Type / कागजातको प्रकार *</label>
+                                <select id="docType" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none bg-white text-slate-800">
+                                    <option value="">-- Choose Government Service --</option>
+                                    <option value="National Identity Card (NID)">National Identity Card (NID)</option>
+                                    <option value="Birth Registration">Birth Registration Certificate</option>
+                                    <option value="Citizenship Certificate Verification">Citizenship Certificate Verification</option>
+                                    <option value="Business License Registration">Business & Trade License</option>
+                                    <option value="Land Ownership Record (Lalpurja)">Land Ownership Record (Lalpurja)</option>
+                                    <option value="Character Certificate / Police Report">Police Character Certificate</option>
+                                </select>
+                            </div>
+
+                            <!-- Full Name -->
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Full Name / पूरा नाम (नागरिकताअनुसार) *</label>
+                                <input type="text" id="fullName" required placeholder="e.g. Ramesh Kumar Shrestha" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none">
+                            </div>
+
+                            <!-- Citizenship Number -->
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Citizenship Status / नागरिकता स्थिति *</label>
+                                <select id="citizenshipStatus" required onchange="updateCitizenshipField()" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none bg-white">
+                                    <option value="">-- Select Status / स्थिति छान्नुहोस् --</option>
+                                    <option value="has">Has Citizenship / नागरिकता छ</option>
+                                    <option value="none">No Citizenship / नागरिकता छैन</option>
+                                    <option value="minor">Minor / नाबालक (Parent/Guardian)</option>
+                                </select>
+                                <div id="citizenshipNumberWrap" class="mt-3">
+                                    <label id="citizenshipNumberLabel" class="block text-xs font-semibold text-slate-600 mb-1">Citizenship Number / नागरिकता नम्बर *</label>
+                                    <input type="text" id="citizenshipNo" required placeholder="e.g. 27-01-78-12345" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none">
+                                    <p id="citizenshipHelp" class="text-[11px] text-slate-500 mt-1">If you do not have citizenship, select the appropriate status above and follow the instructions shown.</p>
+                                </div>
+                            </div>
+
+                            <!-- Mobile Number -->
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Mobile Number / मोबाइल नम्बर (SMS सूचना) *</label>
+                                <input type="tel" id="mobileNo" required placeholder="e.g. 9841234567" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none">
+                            </div>
+
+                            <!-- District -->
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">District / जिल्ला *</label>
+                                <select id="district" onchange="updateWardOptions()" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none bg-white">
+                                    <option value="">-- Select District --</option>
+                                    <option value="Kathmandu">Kathmandu</option>
+                                    <option value="Lalitpur">Lalitpur</option>
+                                    <option value="Bhaktapur">Bhaktapur</option>
+                                    <option value="Pokhara (Kaski)">Pokhara (Kaski)</option>
+                                    <option value="Butwal (Rupandehi)">Butwal (Rupandehi)</option>
+                                    <option value="Chitwan">Chitwan</option>
+                                    <option value="Jhapa">Jhapa</option>
+                                    <option value="Morang">Morang</option>
+                                    <option value="Kailali">Kailali</option>
+                                </select>
+                            </div>
+
+                            <!-- Ward Number -->
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Ward Number / वडा नम्बर *</label>
+                                <select id="wardNo" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none bg-white">
+                                    <option value="">-- Select District/Local Level first --</option>
+                                </select>
+                                <p id="wardHelp" class="text-[11px] text-slate-500 mt-1">Ward numbers are generated according to the selected local level. / छानिएको स्थानीय तहअनुसार वडा नम्बर देखाइन्छ।</p>
+                            </div>
+                        </div>
+
+                        <!-- Purpose / Remarks -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Purpose of Document / कागजातको उद्देश्य तथा थप विवरण *</label>
+                            <textarea id="purpose" rows="3" required placeholder="Specify why you need this document (e.g. Higher studies admission, passport renewal, business registration...)" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none"></textarea>
+                        </div>
+
+                        <!-- File Upload Placeholder -->
+                        <div class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-nepalRed transition bg-slate-50">
+                            <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 mb-2"></i>
+                            <p class="text-sm font-medium text-slate-700">Upload Supporting Document / सहायक कागजात अपलोड गर्नुहोस् (नागरिकता स्क्यान/फोटो)</p>
+                            <p class="text-xs text-slate-400 mt-1">PDF, JPG, PNG up to 10MB / १० MB सम्म (Demo Upload)</p>
+                            <input type="file" id="docFile" class="mt-3 text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-red-50 file:text-nepalRed hover:file:bg-red-100">
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="flex justify-end gap-4 pt-4 border-t border-slate-200">
+                            <button type="button" onclick="cancelEditForm()" id="cancelEditBtn" class="hidden px-6 py-3 rounded-xl font-semibold text-slate-600 hover:bg-slate-100 transition">Cancel Edit</button>
+                            <button type="reset" class="px-6 py-3 rounded-xl font-semibold text-slate-600 hover:bg-slate-100 transition">Clear Form / फारम खाली गर्नुहोस्</button>
+                            <button type="submit" id="formSubmitBtn" class="bg-nepalRed hover:bg-red-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg transition flex items-center gap-2">
+                                <i class="fa-solid fa-paper-plane"></i> Submit Application / आवेदन बुझाउनुहोस्
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB 2: MY APPLICATIONS TRACKER -->
+            <div id="citizen-tab-tracker" class="hidden space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-timeline text-nepalBlue"></i> My Submitted Applications
+                        </h3>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <input type="text" id="searchTracker" oninput="filterTracker()" placeholder="Search by name or ID..." class="px-4 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-nepalBlue w-full sm:w-64">
+                        </div>
+                    </div>
+
+                    <div id="citizenApplicationsList" class="space-y-4">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: GRIEVANCE MANAGEMENT -->
+        <div id="view-grievance" class="view-section hidden animate-fade-in py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="bg-gradient-to-r from-darkSlate to-nepalBlue text-white p-7 rounded-2xl shadow-lg mb-8">
+                <span class="text-xs uppercase font-bold text-nepalGold tracking-wider">Citizen Feedback & Accountability</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold mt-1">Grievance & Complaint Management</h2>
+                <p class="text-slate-300 text-sm mt-2 max-w-3xl">Submit a service-related complaint, receive a grievance reference number, and track administrative updates through the prototype.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-6 border-b border-slate-200">
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-file-circle-exclamation text-nepalRed"></i> Submit Grievance</h3>
+                        <p class="text-xs text-slate-500 mt-1">Please provide clear and relevant information.</p>
+                    </div>
+                    <form id="grievanceForm" onsubmit="handleGrievanceSubmit(event)" class="p-6 space-y-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Category *</label>
+                                <select id="grievanceCategory" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none bg-white">
+                                    <option value="">-- Select Category --</option>
+                                    <option>Service Delay</option><option>Staff / Conduct</option><option>Document / Application</option><option>Payment / Fee</option><option>Website / Technical Issue</option><option>Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Related Service</label>
+                                <select id="grievanceService" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none bg-white">
+                                    <option value="General Service">General Service</option><option>National Identity Card (NID)</option><option>Birth Registration</option><option>Citizenship Verification</option><option>Business License Registration</option><option>Land Ownership Record (Lalpurja)</option><option>Character Certificate / Police Report</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Subject *</label>
+                            <input id="grievanceSubject" required maxlength="100" placeholder="Briefly describe the issue" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Grievance Details *</label>
+                            <textarea id="grievanceDescription" required minlength="10" maxlength="1000" rows="5" placeholder="Explain what happened and what assistance you need..." class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none"></textarea>
+                            <p class="text-[11px] text-slate-400 mt-1">Minimum 10 characters. Do not enter passwords or unnecessary sensitive information.</p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">District *</label>
+                                <select id="grievanceDistrict" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none bg-white">
+                                    <option value="">-- Select District --</option><option>Kathmandu</option><option>Lalitpur</option><option>Bhaktapur</option><option>Pokhara (Kaski)</option><option>Butwal (Rupandehi)</option><option>Chitwan</option><option>Jhapa</option><option>Morang</option><option>Kailali</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Ward Number</label>
+                                <input id="grievanceWard" placeholder="e.g. Ward No. 5" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalRed focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-3 pt-2">
+                            <button type="reset" class="px-5 py-3 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm hover:bg-slate-200">Clear</button>
+                            <button type="submit" class="px-6 py-3 rounded-xl bg-nepalRed hover:bg-red-700 text-white font-bold text-sm shadow flex items-center gap-2"><i class="fa-solid fa-paper-plane"></i> Submit Grievance</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                        <h3 class="font-bold text-slate-900 flex items-center gap-2"><i class="fa-solid fa-route text-nepalBlue"></i> Grievance Workflow</h3>
+                        <div class="mt-5 space-y-3 text-sm text-slate-600">
+                            <div class="flex gap-3"><span class="w-7 h-7 rounded-full bg-red-50 text-nepalRed flex items-center justify-center font-bold text-xs">1</span><span>Citizen submits grievance.</span></div>
+                            <div class="flex gap-3"><span class="w-7 h-7 rounded-full bg-blue-50 text-nepalBlue flex items-center justify-center font-bold text-xs">2</span><span>System records the grievance.</span></div>
+                            <div class="flex gap-3"><span class="w-7 h-7 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs">3</span><span>Administrative user reviews it.</span></div>
+                            <div class="flex gap-3"><span class="w-7 h-7 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">4</span><span>Status/response is updated.</span></div>
+                            <div class="flex gap-3"><span class="w-7 h-7 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">5</span><span>Citizen tracks the grievance.</span></div>
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6">
+                        <h3 class="font-bold text-blue-900 flex items-center gap-2"><i class="fa-solid fa-circle-info"></i> Prototype Notice</h3>
+                        <p class="text-xs text-blue-800 mt-2 leading-relaxed">This grievance module is part of the academic prototype. It is not connected to an official government complaint database.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 4: REQUEST TRACKING -->
+        <div id="view-tracking" class="view-section hidden animate-fade-in py-8 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                <div class="text-center max-w-2xl mx-auto">
+                    <span class="text-nepalRed font-bold text-xs uppercase tracking-wider">Request Tracking</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Track Application or Grievance</h2>
+                    <p class="text-sm text-slate-500 mt-2">Enter the reference number generated by the prototype.</p>
+                </div>
+                <div class="max-w-xl mx-auto mt-7 flex gap-2">
+                    <input id="publicTrackId" placeholder="e.g. NP-2026-8941 or GR-2026-1001" class="flex-1 px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalBlue focus:outline-none">
+                    <button onclick="trackPublicRequest()" class="px-5 py-3 rounded-xl bg-nepalBlue text-white font-bold text-sm hover:bg-blue-800">Track</button>
+                </div>
+                <div id="publicTrackingResult" class="mt-6"></div>
+            </div>
+        </div>
+
+        <!-- VIEW 5: CONTACT / OFFICE INFORMATION -->
+        <div id="view-information" class="view-section hidden animate-fade-in py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="bg-gradient-to-r from-darkSlate to-nepalBlue text-white p-7 rounded-2xl shadow-lg mb-8">
+                <span class="text-xs uppercase font-bold text-nepalGold tracking-wider">Information & Support</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold mt-1">Contact & Municipal Office Information</h2>
+                <p class="text-slate-300 text-sm mt-2">Reference information for navigating the Nagarik Sewa prototype.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"><i class="fa-solid fa-phone text-nepalRed text-xl"></i><h3 class="font-bold mt-4">Citizen Helpline</h3><p class="text-sm text-slate-600 mt-1">1151</p><p class="text-xs text-slate-400">Prototype reference contact</p></div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"><i class="fa-solid fa-envelope text-nepalBlue text-xl"></i><h3 class="font-bold mt-4">Digital Support</h3><p class="text-sm text-slate-600 mt-1">support@nagarsewa.demo</p><p class="text-xs text-slate-400">Demonstration address</p></div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"><i class="fa-solid fa-clock text-amber-600 text-xl"></i><h3 class="font-bold mt-4">Service Hours</h3><p class="text-sm text-slate-600 mt-1">Office hours vary</p><p class="text-xs text-slate-400">Check the relevant office for actual hours</p></div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"><i class="fa-solid fa-circle-info text-emerald-600 text-xl"></i><h3 class="font-bold mt-4">Project Status</h3><p class="text-sm text-slate-600 mt-1">Academic Prototype</p><p class="text-xs text-slate-400">No official database connection</p></div>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm mt-6 overflow-hidden">
+                <div class="p-6 border-b border-slate-200"><h3 class="text-lg font-bold text-slate-900">Municipal Office Reference</h3><p class="text-xs text-slate-500 mt-1">Select a district to see a sample office reference used by the prototype.</p></div>
+                <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div class="md:col-span-2"><label class="block text-xs font-semibold text-slate-600 mb-1">District</label><select id="officeDistrict" onchange="showOfficeInfo()" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-nepalBlue focus:outline-none bg-white"><option value="">-- Select District --</option><option>Kathmandu</option><option>Lalitpur</option><option>Bhaktapur</option><option>Pokhara (Kaski)</option><option>Butwal (Rupandehi)</option><option>Chitwan</option><option>Jhapa</option><option>Morang</option><option>Kailali</option></select></div>
+                    <button onclick="showOfficeInfo()" class="px-5 py-3 rounded-xl bg-nepalBlue text-white font-bold text-sm">Find Office</button>
+                </div>
+                <div id="officeInfo" class="px-6 pb-6"></div>
+                <div class="px-6 pb-6 pt-4 border-t border-slate-100 flex flex-wrap justify-between items-center gap-3"><p class="text-xs text-slate-500">Prototype data is stored only in this browser (localStorage).</p><button onclick="resetDemoData()" class="text-xs px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 font-semibold text-slate-700">Reset demo data</button></div>
+            </div>
+        </div>
+
+        <!-- VIEW 6: ADMIN / OFFICER DASHBOARD -->
+        <div id="view-admin" class="view-section hidden animate-fade-in py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <!-- Header bar for admin -->
+            <div class="bg-gradient-to-r from-darkSlate to-slate-800 text-white p-6 rounded-2xl shadow-lg mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <span class="text-xs uppercase font-bold text-nepalGold tracking-wider">Officer Authorized Portal</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold">Municipal Administration & Review Dashboard</h2>
+                    <p class="text-slate-300 text-sm mt-1">Review incoming document requests, verify information, and issue official approvals.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/10 px-4 py-2 rounded-xl border border-white/20 text-xs">
+                        <i class="fa-solid fa-user-shield text-nepalGold mr-2"></i> Officer: <strong id="adminUsernameDisplay">Govt. Officer Sharma</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase">Total Requests</p>
+                        <h3 id="adminStatTotal" class="text-3xl font-extrabold text-slate-900 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-amber-600 uppercase">Pending Review</p>
+                        <h3 id="adminStatPending" class="text-3xl font-extrabold text-amber-600 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-emerald-600 uppercase">Approved Today</p>
+                        <h3 id="adminStatApproved" class="text-3xl font-extrabold text-emerald-600 mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-nepalRed uppercase">Rejected Requests</p>
+                        <h3 id="adminStatRejected" class="text-3xl font-extrabold text-nepalRed mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-red-50 text-nepalRed flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table Controls & Filters -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center gap-3 w-full md:w-auto">
+                        <h3 class="text-lg font-bold text-slate-900 whitespace-nowrap">Citizen Requests Queue</h3>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+                        <select id="filterStatus" onchange="renderAdminTable()" class="px-4 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-nepalBlue bg-white">
+                            <option value="ALL">All Statuses</option>
+                            <option value="Submitted">Submitted</option>
+                            <option value="Under Review">Under Review</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                        <select id="filterDistrict" onchange="renderAdminTable()" class="px-4 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-nepalBlue bg-white">
+                            <option value="ALL">All Districts</option>
+                            <option value="Kathmandu">Kathmandu</option>
+                            <option value="Lalitpur">Lalitpur</option>
+                            <option value="Bhaktapur">Bhaktapur</option>
+                            <option value="Pokhara (Kaski)">Pokhara (Kaski)</option>
+                            <option value="Butwal (Rupandehi)">Butwal (Rupandehi)</option>
+                        </select>
+                        <input type="text" id="adminSearch" oninput="renderAdminTable()" placeholder="Search name or ID..." class="px-4 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-nepalBlue">
+                    </div>
+                </div>
+
+                <!-- Responsive Data Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider border-b border-slate-200">
+                                <th class="py-4 px-6 font-semibold">App ID</th>
+                                <th class="py-4 px-6 font-semibold">Applicant Name</th>
+                                <th class="py-4 px-6 font-semibold">Document Type</th>
+                                <th class="py-4 px-6 font-semibold">District / Ward</th>
+                                <th class="py-4 px-6 font-semibold">Submission Date</th>
+                                <th class="py-4 px-6 font-semibold">Status</th>
+                                <th class="py-4 px-6 font-semibold text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody" class="divide-y divide-slate-200 text-sm">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mt-8">
+                <div class="p-6 border-b border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                    <div><h3 class="text-lg font-bold text-slate-900">Citizen Grievances</h3><p class="text-xs text-slate-500 mt-1">Review complaints and update their status or response.</p></div>
+                    <select id="grievanceAdminFilter" onchange="renderGrievanceAdmin()" class="px-4 py-2 rounded-xl border border-slate-300 text-sm bg-white"><option value="ALL">All Grievances</option><option value="Submitted">Submitted</option><option value="Under Review">Under Review</option><option value="Resolved">Resolved</option><option value="Rejected">Rejected</option></select>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead><tr class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider border-b border-slate-200"><th class="py-4 px-6">Grievance ID</th><th class="py-4 px-6">Subject</th><th class="py-4 px-6">Category</th><th class="py-4 px-6">District</th><th class="py-4 px-6">Status</th><th class="py-4 px-6 text-center">Action</th></tr></thead>
+                        <tbody id="grievanceAdminBody" class="divide-y divide-slate-200 text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- AUTHENTICATION MODAL (LOGIN & REGISTRATION) -->
+    <div id="authModal" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-fade-in">
+            <div class="bg-gradient-to-r from-darkSlate to-nepalBlue text-white p-6 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-nepalRed flex items-center justify-center text-white">
+                        <i class="fa-solid fa-lock" id="authModalIcon"></i>
+                    </div>
+                    <div>
+                        <h3 id="authModalTitle" class="text-lg font-bold">Portal Authentication</h3>
+                        <p id="authModalSubtitle" class="text-xs text-slate-300">Secure e-Governance Login</p>
+                    </div>
+                </div>
+                <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-6">
+                <!-- Role Selector Tabs inside Modal -->
+                <div class="flex bg-slate-100 p-1 rounded-xl">
+                    <button onclick="switchAuthTab('citizen')" id="authTabCitizen" class="flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-nepalRed shadow-sm transition">Citizen Portal</button>
+                    <button onclick="switchAuthTab('admin')" id="authTabAdmin" class="flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition">Admin / Officer</button>
+                </div>
+
+                <!-- Credentials Info Badge -->
+                <div id="authDemoBadge" class="bg-blue-50 border border-blue-200 text-blue-800 text-xs p-3 rounded-xl flex items-center justify-between">
+                    <div>
+                        <p class="font-bold mb-0.5"><i class="fa-solid fa-circle-info mr-1"></i> Demo Credentials Pre-filled:</p>
+                        <p class="font-mono text-[11px]" id="authDemoText">Email: citizen@gov.np | Pass: password</p>
+                    </div>
+                    <button onclick="fillDemoCredentials()" class="bg-blue-600 text-white px-2.5 py-1 rounded-lg text-[10px] font-semibold hover:bg-blue-700 transition">Fill</button>
+                </div>
+
+                <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                    <div id="registerNameField" class="hidden">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+                        <input type="text" id="authRegName" placeholder="e.g. Ramesh Shrestha" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-nepalRed">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
+                        <input type="email" id="authEmail" required placeholder="e.g. citizen@gov.np" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-nepalRed">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+                        <input type="password" id="authPassword" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-nepalRed">
+                    </div>
+
+                    <button type="submit" id="authSubmitBtn" class="w-full py-3 rounded-xl bg-nepalRed hover:bg-red-700 text-white font-bold text-sm shadow-lg transition">
+                        Login to Citizen Portal
+                    </button>
+                </form>
+
+                <div class="text-center pt-2 border-t border-slate-100">
+                    <p id="authTogglePrompt" class="text-xs text-slate-600">
+                        Don't have an account? <span onclick="toggleAuthMode()" class="text-nepalRed font-bold cursor-pointer hover:underline">Register now</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAILS & APPROVAL MODAL -->
+    <div id="requestModal" role="dialog" aria-modal="true" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden animate-fade-in max-h-[90vh] flex flex-col">
+            <div class="bg-darkSlate text-white p-6 flex justify-between items-center">
+                <h3 class="text-lg font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-file-shield text-nepalGold"></i> Application Review Details
+                </h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div id="modalContent" class="p-6 overflow-y-auto space-y-6 flex-grow">
+                <!-- Content injected dynamically -->
+            </div>
+            <div id="modalFooter" class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-3">
+                <!-- Footer buttons injected dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- DIGITAL CERTIFICATE / RECEIPT MODAL -->
+    <div id="certificateModal" role="dialog" aria-modal="true" class="fixed inset-0 z-50 hidden bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full overflow-hidden animate-fade-in max-h-[95vh] flex flex-col">
+            <div class="bg-nepalRed text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-certificate"></i> Certificate Preview (Sample - Prototype)
+                </h3>
+                <button onclick="closeCertificateModal()" class="text-white/80 hover:text-white">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div id="certificateBody" class="p-8 overflow-y-auto space-y-6 bg-slate-100 flex-grow">
+                <!-- Certificate Template -->
+            </div>
+            <div class="p-4 bg-white border-t border-slate-200 flex justify-end gap-3">
+                <button onclick="closeCertificateModal()" class="px-5 py-2 rounded-xl text-slate-700 bg-slate-100 hover:bg-slate-200 font-semibold text-sm">Close</button>
+                <button onclick="printCertificate()" class="px-6 py-2 rounded-xl bg-nepalBlue text-white font-semibold text-sm shadow hover:bg-blue-800 transition flex items-center gap-2">
+                    <i class="fa-solid fa-print"></i> Print / Download PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SERVICE DETAILS MODAL -->
+    <div id="serviceModal" role="dialog" aria-modal="true" aria-labelledby="serviceModalTitle" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden animate-fade-in max-h-[90vh] flex flex-col">
+            <div class="bg-nepalBlue text-white p-5 flex justify-between items-center"><h3 id="serviceModalTitle" class="font-bold"></h3><button onclick="closeServiceModal()" aria-label="Close" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button></div>
+            <div id="serviceModalBody" class="p-6 space-y-5 overflow-y-auto"></div>
+            <div class="p-4 bg-slate-50 border-t flex justify-end gap-3"><button onclick="closeServiceModal()" class="px-5 py-2 rounded-xl bg-slate-100 text-sm font-semibold">Back to Services</button><button id="serviceApplyBtn" class="px-6 py-2 rounded-xl bg-nepalRed text-white text-sm font-bold">Apply for this Service</button></div>
+        </div>
+    </div>
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 space-y-3 pointer-events-none"></div>
+
+    <!-- Footer -->
+    <footer class="bg-darkSlate text-slate-400 text-sm mt-16 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-nepalBlue to-nepalRed flex items-center justify-center text-white">
+                        <i class="fa-solid fa-landmark"></i>
+                    </div>
+                    <span class="font-bold text-white text-lg">Nagarik Sewa Kendra</span>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Academic e-Governance prototype demonstrating centralized citizen services, applications, grievances, and request tracking.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Quick Links</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#" onclick="switchView('landing'); return false;" class="hover:text-white transition">Home</a></li>
+                    <li><a href="#" onclick="promptLoginForService(''); return false;" class="hover:text-white transition">Citizen Application Portal</a></li>
+                    <li><a href="#" onclick="switchView('grievance'); return false;" class="hover:text-white transition">Grievance Management</a></li>
+                    <li><a href="#" onclick="switchView('information'); return false;" class="hover:text-white transition">Contact & Office Information</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Municipal Offices</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><i class="fa-solid fa-location-dot mr-1 text-nepalRed"></i> Kathmandu Metropolitan City, Ward 1</li>
+                    <li><i class="fa-solid fa-location-dot mr-1 text-nepalRed"></i> Lalitpur Metropolitan Office</li>
+                    <li><i class="fa-solid fa-location-dot mr-1 text-nepalRed"></i> Pokhara Metropolitan City Office</li>
+                    <li><i class="fa-solid fa-location-dot mr-1 text-nepalRed"></i> Butwal Sub-Metropolitan Ward 4</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold text-sm mb-4 uppercase tracking-wider">Security & Compliance</h4>
+                <p class="text-xs text-slate-400 mb-3">Prototype security notice: this academic system is not connected to official government databases or production infrastructure.</p>
+                <div class="flex items-center space-x-3 text-lg text-slate-300">
+                    <i class="fa-solid fa-shield-halved text-emerald-400" title="Basic validation"></i>
+                    <i class="fa-solid fa-database" title="Browser-based prototype data"></i>
+                    <i class="fa-solid fa-laptop-code" title="Academic prototype"></i>
+                </div>
+            </div>
+        </div>
+        <div class="bg-slate-950 py-4 text-center text-xs text-slate-500 border-t border-slate-900">
+            <p>&copy; 2026 Nagarik Sewa Kendra • Academic Project Prototype. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Authentication & Application State Management with localStorage
+        const esc = v => String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        let currentUser = JSON.parse(localStorage.getItem('nsk_current_user')) || null;
+        let applications = JSON.parse(localStorage.getItem('nsk_applications')) || [
+            {
+                id: "NP-2026-8941",
+                docType: "National Identity Card (NID)",
+                fullName: "Sita Devi Adhikari",
+                email: "sita@gmail.com",
+                citizenshipNo: "27-01-79-05421",
+                mobileNo: "9851023456",
+                district: "Kathmandu",
+                wardNo: "Ward No. 3",
+                purpose: "Renewal for passport and banking KYC compliance.",
+                status: "Submitted",
+                date: "2026-09-27 10:15 AM",
+                remarks: "Submitted online, awaiting biometric verification."
+            },
+            {
+                id: "NP-2026-8940",
+                docType: "Birth Registration",
+                fullName: "Aarav Sharma",
+                email: "citizen@gov.np",
+                citizenshipNo: "12-02-81-99823 (Parent)",
+                mobileNo: "9841987654",
+                district: "Lalitpur",
+                wardNo: "Ward No. 1",
+                purpose: "Newborn birth certificate registration at local ward.",
+                status: "Approved",
+                date: "2026-09-26 02:40 PM",
+                remarks: "Verified birth hospital report. Approved by Ward Secretary."
+            },
+            {
+                id: "NP-2026-8939",
+                docType: "Business License Registration",
+                fullName: "Bimal Kumar Pradhan",
+                email: "bimal@gmail.com",
+                citizenshipNo: "05-01-75-01234",
+                mobileNo: "9801122334",
+                district: "Pokhara (Kaski)",
+                wardNo: "Ward No. 4",
+                purpose: "New IT consulting firm registration (Himalayan Tech Solutions).",
+                status: "Under Review",
+                date: "2026-09-26 11:20 AM",
+                remarks: "Tax clearance check in progress."
+            },
+            {
+                id: "NP-2026-8938",
+                docType: "Land Ownership Record (Lalpurja)",
+                fullName: "Sunil Thapa Magar",
+                email: "citizen@gov.np",
+                citizenshipNo: "33-01-72-98712",
+                mobileNo: "9812345678",
+                district: "Butwal (Rupandehi)",
+                wardNo: "Ward No. 2",
+                purpose: "Malpot land ownership transcript verification for bank loan.",
+                status: "Approved",
+                date: "2026-09-25 04:10 PM",
+                remarks: "Matched with land revenue registry folio #402."
+            },
+            {
+                id: "NP-2026-8937",
+                docType: "Character Certificate / Police Report",
+                fullName: "Puja Karki",
+                email: "puja@gmail.com",
+                citizenshipNo: "14-01-82-44512",
+                mobileNo: "9867543210",
+                district: "Bhaktapur",
+                wardNo: "Ward No. 5",
+                purpose: "Police clearance report for Australian student visa application.",
+                status: "Rejected",
+                date: "2026-09-24 09:05 AM",
+                remarks: "Incomplete police precinct jurisdiction form. Re-submit required."
+            }
+        ];
+
+        let grievances = JSON.parse(localStorage.getItem('nsk_grievances')) || [
+            { id: 'GR-2026-1001', email: 'citizen@gov.np', fullName: 'Aarav Sharma', category: 'Service Delay', service: 'Birth Registration', subject: 'Application review is taking longer than expected', description: 'Request submitted earlier and still waiting for review.', district: 'Lalitpur', ward: 'Ward No. 1', status: 'Under Review', date: '2026-09-28 11:20 AM', response: 'The request is currently being reviewed by the responsible office.' },
+            { id: 'GR-2026-1002', email: 'sita@gmail.com', fullName: 'Sita Devi Adhikari', category: 'Website / Technical Issue', service: 'General Service', subject: 'Difficulty accessing the tracking page', description: 'Tracking information was not visible during an earlier visit.', district: 'Kathmandu', ward: 'Ward No. 3', status: 'Resolved', date: '2026-09-27 03:10 PM', response: 'The issue was reviewed and the tracking interface was updated.' }
+        ];
+
+        applications.forEach(a => { if(a.status === 'Pending') a.status = 'Submitted'; });
+        let authModalRole = 'citizen'; // 'citizen' or 'admin'
+        let authMode = 'login'; // 'login' or 'register'
+
+        // Bilingual interface and improved citizen details handling
+        let currentLanguage = localStorage.getItem('nsk_language') || 'en';
+
+        // Real language switch: show ONE language at a time, not both.
+        // Existing bilingual text is written as: English / नेपाली.
+        const translations = {
+            'View Requirements & Apply': 'आवश्यकता हेर्नुहोस् र आवेदन दिनुहोस्',
+            'Nagarik Sewa Kendra • Citizen Service Hub': 'नागरिक सेवा केन्द्र • नागरिक सेवा हब',
+            'Government Services': 'सरकारी सेवाहरू',
+            'Now at Your Fingertips': 'अब तपाईंको हातमा',
+            'Officer / Admin Login': 'अधिकारी / प्रशासन लगइन',
+            'Live Governance Metrics': 'प्रत्यक्ष सेवा विवरण',
+            'Total Requests': 'कुल अनुरोध',
+            'Pending Review': 'समीक्षामा',
+            'Approved & Issued': 'स्वीकृत तथा जारी',
+            'Demo Revenue (Illustrative)': 'संकलित राजस्व',
+            'Available Digital Document Services': 'उपलब्ध डिजिटल कागजात सेवाहरू',
+            'Apply Now': 'अहिले आवेदन दिनुहोस्',
+            'Request & Track Government Documents': 'सरकारी कागजात अनुरोध तथा ट्र्याक',
+            'New Request': 'नयाँ अनुरोध',
+            'My Applications': 'मेरा आवेदन',
+            'Official Government Document Request Form': 'सरकारी कागजात अनुरोध फारम',
+            'Please fill in your authentic details as per your Nepali Citizenship Certificate.': 'नेपाली नागरिकता प्रमाणपत्रअनुसार सही विवरण भर्नुहोस्।',
+            'Select Document Type': 'कागजातको प्रकार छान्नुहोस्',
+            'Full Name': 'पूरा नाम',
+            'Citizenship Status': 'नागरिकता स्थिति',
+            'Has Citizenship': 'नागरिकता छ',
+            'No Citizenship': 'नागरिकता छैन',
+            'Minor': 'नाबालक',
+            'Citizenship Number': 'नागरिकता नम्बर',
+            'Mobile Number': 'मोबाइल नम्बर',
+            'District': 'जिल्ला',
+            'Ward Number': 'वडा नम्बर',
+            'Purpose of Document': 'कागजातको उद्देश्य तथा थप विवरण',
+            'Upload Supporting Document': 'सहायक कागजात अपलोड गर्नुहोस्',
+            'Clear Form': 'फारम खाली गर्नुहोस्',
+            'Submit Application': 'आवेदन बुझाउनुहोस्',
+            'Print / Download PDF': 'प्रिन्ट / PDF डाउनलोड',
+            'Admin / Officer': 'प्रशासन / अधिकारी',
+            'No applications found.': 'कुनै आवेदन भेटिएन।',
+            'Application submitted successfully!': 'आवेदन सफलतापूर्वक बुझाइयो!',
+            'Language changed to English.': 'भाषा अंग्रेजीमा परिवर्तन भयो।',
+            'भाषा नेपालीमा परिवर्तन भयो।': 'भाषा नेपालीमा परिवर्तन भयो।'
+        };
+
+        function translateNodeText(text, lang) {
+            if (!text || !text.trim()) return text;
+            const leading = text.match(/^\s*/)?.[0] || '';
+            const trailing = text.match(/\s*$/)?.[0] || '';
+            const core = text.trim();
+            if (core.includes(' / ')) {
+                const parts = core.split(' / ');
+                return leading + (lang === 'ne' ? parts.slice(1).join(' / ') : parts[0]) + trailing;
+            }
+            if (lang === 'ne' && translations[core]) return leading + translations[core] + trailing;
+            if (lang === 'en') {
+                const found = Object.entries(translations).find(([en, ne]) => ne === core);
+                if (found) return leading + found[0] + trailing;
+            }
+            return text;
+        }
+
+        function applyLanguage() {
+            document.documentElement.lang = currentLanguage === 'ne' ? 'ne' : 'en';
+            document.documentElement.dir = 'ltr';
+
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+            const nodes = [];
+            while (walker.nextNode()) nodes.push(walker.currentNode);
+            nodes.forEach(node => {
+                if (node.parentElement && ['SCRIPT','STYLE','NOSCRIPT'].includes(node.parentElement.tagName)) return;
+                node.nodeValue = translateNodeText(node.nodeValue, currentLanguage);
+            });
+
+            // Translate common form attributes/placeholders too.
+            const attrs = document.querySelectorAll('input[placeholder], textarea[placeholder], button[title], [data-help]');
+            attrs.forEach(el => {
+                ['placeholder','title','data-help'].forEach(attr => {
+                    if (el.hasAttribute(attr)) el.setAttribute(attr, translateNodeText(el.getAttribute(attr), currentLanguage));
+                });
+            });
+
+            const toggle = document.getElementById('languageToggle');
+            if (toggle) toggle.innerText = currentLanguage === 'ne' ? 'English' : 'नेपाली';
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'ne' : 'en';
+            localStorage.setItem('nsk_language', currentLanguage);
+            applyLanguage();
+            showToast(currentLanguage === 'ne' ? 'भाषा नेपालीमा परिवर्तन भयो।' : 'Language changed to English.', 'success');
+        }
+
+        function updateCitizenshipField() {
+            const status = document.getElementById('citizenshipStatus').value;
+            const input = document.getElementById('citizenshipNo');
+            const label = document.getElementById('citizenshipNumberLabel');
+            const help = document.getElementById('citizenshipHelp');
+            if(status === 'none') {
+                input.required = false;
+                input.placeholder = 'N/A – No Citizenship';
+                input.value = 'N/A – No Citizenship';
+                label.innerText = 'Citizenship Number / नागरिकता नम्बर';
+                help.innerText = 'No citizenship yet? Enter “N/A – No Citizenship”. Upload a birth certificate, parent/guardian citizenship, or other accepted supporting document. / नागरिकता नभए “N/A – No Citizenship” लेख्नुहोस् र जन्मदर्ता, अभिभावकको नागरिकता वा अन्य सहायक कागजात अपलोड गर्नुहोस्।';
+            } else if(status === 'minor') {
+                input.required = true;
+                input.placeholder = 'Parent/Guardian citizenship number';
+                label.innerText = 'Parent/Guardian Citizenship No. / अभिभावकको नागरिकता नं. *';
+                help.innerText = 'For a minor without citizenship, enter the parent/guardian citizenship number and upload the child’s birth registration/supporting document. / नाबालकको नागरिकता नभए अभिभावकको नागरिकता नम्बर र जन्मदर्ता/सहायक कागजात राख्नुहोस्।';
+            } else {
+                input.required = true;
+                input.placeholder = 'e.g. 27-01-78-12345';
+                if(status === 'has') input.value = '';
+                label.innerText = 'Citizenship Number / नागरिकता नम्बर *';
+                help.innerText = 'Enter the number exactly as shown on the citizenship certificate. / नागरिकता प्रमाणपत्रमा भएको नम्बर जस्ताको तस्तै लेख्नुहोस्।';
+            }
+        }
+
+        const wardCounts = {
+            'Kathmandu': 32,
+            'Lalitpur': 29,
+            'Bhaktapur': 10,
+            'Pokhara (Kaski)': 33,
+            'Butwal (Rupandehi)': 19,
+            'Chitwan': 33,
+            'Jhapa': 23,
+            'Morang': 17,
+            'Kailali': 13
+        };
+
+        function updateWardOptions() {
+            const district = document.getElementById('district').value;
+            const ward = document.getElementById('wardNo');
+            const count = wardCounts[district] || 0;
+            ward.innerHTML = '<option value="">-- Select Ward / वडा छान्नुहोस् --</option>';
+            for(let i=1; i<=count; i++) {
+                ward.insertAdjacentHTML('beforeend', `<option value="Ward No. ${i}">Ward No. ${i} / वडा नं. ${i}</option>`);
+            }
+            document.getElementById('wardHelp').innerText = count ? `${district}: ${count} ward options available. / ${district}: ${count} वटा वडा उपलब्ध छन्।` : 'Select a district first. / पहिले जिल्ला छान्नुहोस्।';
+        }
+
+        // Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            if(document.getElementById('languageToggle')) document.getElementById('languageToggle').innerText = currentLanguage === 'ne' ? 'English / नेपाली' : 'नेपाली / English';
+            updateCitizenshipField();
+            saveState();
+            updateGlobalUI();
+            updateStats();
+            renderAdminTable();
+            renderGrievanceAdmin();
+            renderTrackerList();
+        });
+
+        function saveState() {
+            localStorage.setItem('nsk_current_user', JSON.stringify(currentUser));
+            localStorage.setItem('nsk_applications', JSON.stringify(applications));
+            localStorage.setItem('nsk_grievances', JSON.stringify(grievances));
+        }
+
+        // Update Top Navigation and Ribbon based on Auth state
+        function updateGlobalUI() {
+            const desktopNav = document.getElementById('desktopNav');
+            const ribbonStatus = document.getElementById('authRibbonStatus');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            if(!currentUser) {
+                ribbonStatus.innerHTML = `<span class="text-slate-400">Not Logged In</span> <button onclick="openAuthModal('citizen')" class="text-nepalGold hover:underline font-semibold ml-2">Login</button>`;
+                desktopNav.innerHTML = `
+                    <button onclick="switchView('landing')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Home</button>
+                    <button onclick="goToServices()" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Services</button>
+                    <button onclick="switchView('grievance')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Grievances</button>
+                    <button onclick="switchView('tracking')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Track</button>
+                    <button onclick="switchView('information')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Offices</button>
+                    <button onclick="openAuthModal('citizen')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Citizen Login</button>
+                    <button onclick="openAuthModal('admin')" class="bg-nepalRed text-white px-3 py-2 rounded-xl text-sm font-bold shadow hover:bg-red-700 transition">Admin Login</button>
+                `;
+                mobileMenu.innerHTML = `
+                    <button onclick="switchView('landing'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Home</button>
+                    <button onclick="goToServices(); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Services</button>
+                    <button onclick="switchView('grievance'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Grievances</button>
+                    <button onclick="switchView('tracking'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Track Request</button>
+                    <button onclick="switchView('information'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Offices & Contact</button>
+                    <button onclick="openAuthModal('citizen'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Citizen Login</button>
+                    <button onclick="openAuthModal('admin'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Admin Login</button>
+                `;
+            } else if(currentUser.role === 'citizen') {
+                ribbonStatus.innerHTML = `<span class="text-emerald-400"><i class="fa-solid fa-circle text-[8px] mr-1"></i> ${currentUser.name} (Citizen)</span> <button onclick="logout()" class="text-red-400 hover:underline ml-2">Logout</button>`;
+                desktopNav.innerHTML = `
+                    <button onclick="switchView('landing')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Home</button>
+                    <button onclick="goToServices()" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Services</button>
+                    <button onclick="switchView('citizen')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Citizen Portal</button>
+                    <button onclick="switchView('grievance')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Grievances</button>
+                    <button onclick="switchView('tracking')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Track</button>
+                    <button onclick="switchView('information')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Offices</button>
+                    <button onclick="logout()" class="px-3 py-2 rounded-lg text-sm font-semibold text-red-600 hover:bg-red-50 transition">Logout</button>
+                `;
+                mobileMenu.innerHTML = `
+                    <button onclick="switchView('landing'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100"><i class="fa-solid fa-house mr-2 text-nepalBlue"></i> Home</button>
+                    <button onclick="goToServices(); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Services</button>
+                    <button onclick="switchView('citizen'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100"><i class="fa-solid fa-user-shield mr-2 text-nepalBlue"></i> Citizen Portal</button>
+                    <button onclick="logout(); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50"><i class="fa-solid fa-right-from-bracket mr-2"></i> Logout</button>
+                `;
+            } else if(currentUser.role === 'admin') {
+                ribbonStatus.innerHTML = `<span class="text-nepalGold"><i class="fa-solid fa-shield-halved mr-1"></i> ${currentUser.name} (Officer)</span> <button onclick="logout()" class="text-red-400 hover:underline ml-2">Logout</button>`;
+                desktopNav.innerHTML = `
+                    <button onclick="switchView('landing')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Home</button>
+                    <button onclick="goToServices()" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Services</button>
+                    <button onclick="switchView('admin')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Admin Dashboard</button>
+                    <button onclick="switchView('grievance')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Grievances</button>
+                    <button onclick="switchView('information')" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">Offices</button>
+                    <button onclick="logout()" class="px-3 py-2 rounded-lg text-sm font-semibold text-red-600 hover:bg-red-50 transition">Logout</button>
+                `;
+                mobileMenu.innerHTML = `
+                    <button onclick="switchView('landing'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100"><i class="fa-solid fa-house mr-2 text-nepalBlue"></i> Home</button>
+                    <button onclick="goToServices(); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Services</button>
+                    <button onclick="switchView('admin'); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100"><i class="fa-solid fa-gauge-high mr-2 text-nepalBlue"></i> Admin Dashboard</button>
+                    <button onclick="logout(); toggleMobileMenu();" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50"><i class="fa-solid fa-right-from-bracket mr-2"></i> Logout</button>
+                `;
+            }
+        }
+
+        function handleLogoClick() {
+            if(!currentUser) switchView('landing');
+            else if(currentUser.role === 'citizen') switchView('citizen');
+            else if(currentUser.role === 'admin') switchView('admin');
+        }
+
+        // Switch between major views
+        function switchView(viewName) {
+            if(viewName === 'citizen' && (!currentUser || currentUser.role !== 'citizen')) {
+                openAuthModal('citizen');
+                return;
+            }
+            if(viewName === 'admin' && (!currentUser || currentUser.role !== 'admin')) {
+                openAuthModal('admin');
+                return;
+            }
+
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Authentication Modal Controls
+        function openAuthModal(role = 'citizen') {
+            authModalRole = role;
+            authMode = 'login';
+            updateAuthModalUI();
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        function switchAuthTab(role) {
+            authModalRole = role;
+            updateAuthModalUI();
+        }
+
+        function updateAuthModalUI() {
+            const btnCitizen = document.getElementById('authTabCitizen');
+            const btnAdmin = document.getElementById('authTabAdmin');
+            const title = document.getElementById('authModalTitle');
+            const subtitle = document.getElementById('authModalSubtitle');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const demoText = document.getElementById('authDemoText');
+            const regNameField = document.getElementById('registerNameField');
+            const togglePrompt = document.getElementById('authTogglePrompt');
+
+            if(authModalRole === 'citizen') {
+                btnCitizen.className = "flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-nepalRed shadow-sm transition";
+                btnAdmin.className = "flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition";
+                title.innerText = authMode === 'login' ? 'Citizen Portal Login' : 'Citizen Registration';
+                subtitle.innerText = 'Access or create your municipal citizen account';
+                submitBtn.innerText = authMode === 'login' ? 'Login to Citizen Portal' : 'Register Citizen Account';
+                demoText.innerText = 'Email: citizen@gov.np | Pass: password';
+                if(authMode === 'register') {
+                    regNameField.classList.remove('hidden');
+                    togglePrompt.innerHTML = `Already have an account? <span onclick="toggleAuthMode()" class="text-nepalRed font-bold cursor-pointer hover:underline">Login here</span>`;
+                } else {
+                    regNameField.classList.add('hidden');
+                    togglePrompt.innerHTML = `Don't have an account? <span onclick="toggleAuthMode()" class="text-nepalRed font-bold cursor-pointer hover:underline">Register now</span>`;
+                }
+            } else {
+                btnAdmin.className = "flex-1 py-2.5 rounded-lg text-xs font-bold bg-white text-nepalRed shadow-sm transition";
+                btnCitizen.className = "flex-1 py-2.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition";
+                title.innerText = 'Officer / Admin Login';
+                subtitle.innerText = 'Authorized municipal officers only';
+                submitBtn.innerText = 'Login to Admin Dashboard';
+                demoText.innerText = 'Email: admin@gov.np | Pass: password';
+                regNameField.classList.add('hidden');
+                togglePrompt.innerHTML = `<span class="text-slate-400">Restricted Government Portal</span>`;
+            }
+        }
+
+        function toggleAuthMode() {
+            authMode = authMode === 'login' ? 'register' : 'login';
+            updateAuthModalUI();
+        }
+
+        function fillDemoCredentials() {
+            if(authModalRole === 'citizen') {
+                document.getElementById('authEmail').value = 'citizen@gov.np';
+                document.getElementById('authPassword').value = 'password';
+                if(authMode === 'register') document.getElementById('authRegName').value = 'Ramesh Kumar Shrestha';
+            } else {
+                document.getElementById('authEmail').value = 'admin@gov.np';
+                document.getElementById('authPassword').value = 'password';
+            }
+        }
+
+        const pwHash = p => { let h = 5381; for(const c of p) h = ((h << 5) + h + c.charCodeAt(0)) >>> 0; return h.toString(16); }; // demo-only hashing
+        let users = JSON.parse(localStorage.getItem('nsk_users')) || [
+            { name: 'Aarav Sharma', email: 'citizen@gov.np', pw: pwHash('password'), role: 'citizen' },
+            { name: 'Govt. Officer Sharma', email: 'admin@gov.np', pw: pwHash('password'), role: 'admin' }
+        ];
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value.trim().toLowerCase();
+            const password = document.getElementById('authPassword').value;
+            if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('Enter a valid email address.', 'error'); return; }
+            if(authModalRole === 'citizen' && authMode === 'register') {
+                const regName = document.getElementById('authRegName').value.trim();
+                if(regName.length < 3) { showToast('Enter your full name.', 'error'); return; }
+                if(password.length < 6) { showToast('Password must be at least 6 characters.', 'error'); return; }
+                if(users.some(u => u.email === email)) { showToast('An account with this email already exists.', 'error'); return; }
+                users.push({ name: esc(regName), email, pw: pwHash(password), role: 'citizen' });
+                localStorage.setItem('nsk_users', JSON.stringify(users));
+                currentUser = { name: esc(regName), email, role: 'citizen' };
+                saveState(); closeAuthModal(); updateGlobalUI();
+                showToast(`Account created for ${currentUser.name}.`, 'success');
+                switchView('citizen');
+                return;
+            }
+            const user = users.find(u => u.email === email && u.pw === pwHash(password) && u.role === authModalRole);
+            if(!user) { showToast(authModalRole === 'admin' ? 'Invalid officer credentials.' : 'Invalid email or password.', 'error'); return; }
+            currentUser = { name: user.name, email: user.email, role: user.role };
+            saveState(); closeAuthModal(); updateGlobalUI();
+            showToast(`Welcome, ${user.name}.`, 'success');
+            switchView(user.role === 'admin' ? 'admin' : 'citizen');
+        }
+
+        function logout() {
+            currentUser = null;
+            saveState();
+            updateGlobalUI();
+            switchView('landing');
+            showToast("Successfully logged out.", "success");
+        }
+
+
+        const serviceCatalog = {
+            'National Identity Card (NID)': { time: '7-15 working days', req: ['Citizenship certificate (original + copy)', 'Passport-size photograph', 'Recommendation from ward office', 'Mobile number for updates'], steps: ['Select service and read requirements', 'Fill in the application form', 'Upload supporting document', 'Officer reviews the request', 'Track status with the reference number'] },
+            'Birth Registration': { time: '3-7 working days', req: ['Hospital birth slip or local witness letter', 'Parents\' citizenship certificates', 'Marriage registration certificate (if available)', 'Applicant contact details'], steps: ['Select service', 'Enter child and parent details', 'Upload supporting documents', 'Ward officer reviews', 'Track status and view sample certificate once approved'] },
+            'Citizenship Certificate Verification': { time: '5-10 working days', req: ['Citizenship certificate (original + copy)', 'Applicant photograph', 'Reason for verification'], steps: ['Select service', 'Enter citizenship details', 'Upload document copy', 'Officer verifies the record', 'Track the outcome'] },
+            'Business License Registration': { time: '7-14 working days', req: ['Applicant citizenship certificate', 'Business name and address', 'Lease/ownership document of premises', 'Passport-size photograph'], steps: ['Select service', 'Provide applicant and business details', 'Upload premises document', 'Municipal officer reviews', 'Track the status'] },
+            'Land Ownership Record (Lalpurja)': { time: '7-15 working days', req: ['Citizenship certificate', 'Land parcel (Kitta) number and location', 'Previous ownership document (if any)'], steps: ['Select service', 'Enter parcel and owner details', 'Upload ownership document', 'Officer verifies records', 'Track the status'] },
+            'Character Certificate / Police Report': { time: '3-7 working days', req: ['Citizenship certificate', 'Passport-size photograph', 'Purpose letter (employment, study, visa)'], steps: ['Select service', 'Enter personal details and purpose', 'Upload supporting document', 'Officer reviews the request', 'Track the status'] }
+        };
+        function openServiceDetails(name) {
+            const sv = serviceCatalog[name];
+            if(!sv) { promptLoginForService(name); return; }
+            document.getElementById('serviceModalTitle').textContent = name;
+            document.getElementById('serviceModalBody').innerHTML = `
+                <p class="text-xs text-slate-500"><i class="fa-regular fa-clock mr-1"></i> Estimated processing time (sample): <strong>${sv.time}</strong></p>
+                <div><h4 class="font-bold text-slate-900 text-sm mb-2">Required information / documents</h4><ul class="list-disc pl-5 text-sm text-slate-700 space-y-1">${sv.req.map(r => `<li>${r}</li>`).join('')}</ul></div>
+                <div><h4 class="font-bold text-slate-900 text-sm mb-2">Application procedure</h4><ol class="list-decimal pl-5 text-sm text-slate-700 space-y-1">${sv.steps.map(r => `<li>${r}</li>`).join('')}</ol></div>
+                <p class="text-[11px] text-slate-400">Sample information for demonstration only; actual requirements may differ at real government offices.</p>`;
+            document.getElementById('serviceApplyBtn').onclick = () => { closeServiceModal(); promptLoginForService(name); };
+            document.getElementById('serviceModal').classList.remove('hidden');
+        }
+        function closeServiceModal() { document.getElementById('serviceModal').classList.add('hidden'); }
+        function goToServices() { switchView('landing'); setTimeout(() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' }), 50); }
+        function timelineHTML(status, isG) {
+            const last = isG ? 'Resolved' : 'Approved';
+            const steps = ['Submitted', 'Under Review', status === 'Rejected' ? 'Rejected' : last];
+            const idx = status === 'Rejected' ? 2 : steps.indexOf(status);
+            return `<div class="grid grid-cols-3 gap-2 mt-6 text-center">${steps.map((st, i) => {
+                const done = i <= idx; const bad = st === 'Rejected' && done;
+                return `<div class="status-step"><div class="mx-auto w-9 h-9 rounded-full flex items-center justify-center text-white text-sm ${bad ? 'bg-red-500' : done ? 'bg-emerald-500' : 'bg-slate-300'}"><i class="fa-solid ${bad ? 'fa-xmark' : done ? 'fa-check' : 'fa-circle'}"></i></div><p class="text-[11px] mt-2 font-semibold ${done ? 'text-slate-800' : 'text-slate-400'}">${st}</p></div>`;
+            }).join('')}</div>`;
+        }
+        function resetDemoData() {
+            if(!confirm('Reset all demo data stored in this browser?')) return;
+            ['nsk_current_user','nsk_applications','nsk_grievances','nsk_users'].forEach(k => localStorage.removeItem(k));
+            location.reload();
+        }
+        document.addEventListener('keydown', e => { if(e.key === 'Escape') { closeModal(); closeCertificateModal(); closeAuthModal(); closeServiceModal(); } });
+
+        function promptLoginForService(docName) {
+            if(!currentUser) {
+                openAuthModal('citizen');
+                showToast("Please login as a citizen to apply for government documents.", "error");
+            } else if(currentUser.role === 'admin') {
+                showToast("Admins cannot submit citizen requests. Please login with a citizen account.", "error");
+            } else {
+                switchView('citizen');
+                switchCitizenTab('apply');
+                if(docName) document.getElementById('docType').value = docName;
+            }
+        }
+
+        // Switch Citizen Tabs (Apply vs Tracker)
+        function switchCitizenTab(tab) {
+            if(tab === 'apply') {
+                document.getElementById('citizen-tab-apply').classList.remove('hidden');
+                document.getElementById('citizen-tab-tracker').classList.add('hidden');
+                document.getElementById('tab-apply').className = "px-5 py-2 rounded-lg font-semibold text-sm bg-white text-nepalRed shadow-sm transition";
+                document.getElementById('tab-tracker').className = "px-5 py-2 rounded-lg font-semibold text-sm text-slate-600 hover:text-slate-900 transition";
+            } else {
+                document.getElementById('citizen-tab-apply').classList.add('hidden');
+                document.getElementById('citizen-tab-tracker').classList.remove('hidden');
+                document.getElementById('tab-tracker').className = "px-5 py-2 rounded-lg font-semibold text-sm bg-white text-nepalBlue shadow-sm transition";
+                document.getElementById('tab-apply').className = "px-5 py-2 rounded-lg font-semibold text-sm text-slate-600 hover:text-slate-900 transition";
+                renderTrackerList();
+            }
+        }
+
+        // Handle Application Submit or Edit (User action)
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            if(!currentUser || currentUser.role !== 'citizen') {
+                showToast("Unauthorized. Please login as citizen.", "error");
+                return;
+            }
+
+            const editId = document.getElementById('editAppId').value;
+            const docType = document.getElementById('docType').value;
+            let fullName = document.getElementById('fullName').value.trim();
+            let citizenshipNo = document.getElementById('citizenshipNo').value.trim();
+            const citizenshipStatus = document.getElementById('citizenshipStatus').value;
+            const mobileNo = document.getElementById('mobileNo').value.trim();
+            const district = document.getElementById('district').value;
+            const wardNo = document.getElementById('wardNo').value;
+            let purpose = document.getElementById('purpose').value.trim();
+            const checks = [
+                ['docType', !!docType, 'Please select a document type.'],
+                ['fullName', /^[\p{L}\p{M}\s.'-]{3,60}$/u.test(fullName), 'Enter your full name (letters only, at least 3 characters).'],
+                ['citizenshipStatus', !!citizenshipStatus, 'Please select your citizenship status.'],
+                ['citizenshipNo', citizenshipStatus === 'none' || /^[A-Za-z0-9\u0966-\u096F\-\/ ]{5,25}$/.test(citizenshipNo), 'Enter a valid citizenship number (5-25 characters, e.g. 27-01-78-12345).'],
+                ['mobileNo', /^9[78]\d{8}$/.test(mobileNo), 'Enter a valid 10-digit Nepali mobile number starting with 97 or 98.'],
+                ['district', !!district, 'Please select a district.'],
+                ['wardNo', !!wardNo, 'Please select a ward.'],
+                ['purpose', purpose.length >= 10, 'Please describe the purpose (at least 10 characters).']
+            ];
+            document.querySelectorAll('.field-error').forEach(el => el.remove());
+            let firstBad = null;
+            checks.forEach(([id, ok, msg]) => {
+                if(ok) return;
+                const input = document.getElementById(id);
+                const p = document.createElement('p');
+                p.className = 'field-error text-xs text-red-600 mt-1';
+                p.setAttribute('role', 'alert');
+                p.textContent = msg;
+                input.insertAdjacentElement('afterend', p);
+                input.classList.add('border-red-400');
+                input.addEventListener('input', () => { input.classList.remove('border-red-400'); p.remove(); }, { once: true });
+                if(!firstBad) firstBad = input;
+            });
+            if(firstBad) { firstBad.focus(); showToast('Please correct the highlighted fields.', 'error'); return; }
+            fullName = esc(fullName); citizenshipNo = esc(citizenshipNo); purpose = esc(purpose);
+
+            if(editId) {
+                // Modify existing application
+                const app = applications.find(a => a.id === editId);
+                if(app) {
+                    app.docType = docType;
+                    app.fullName = fullName;
+                    app.citizenshipNo = citizenshipNo;
+                    app.citizenshipStatus = citizenshipStatus;
+                    app.mobileNo = mobileNo;
+                    app.district = district;
+                    app.wardNo = wardNo;
+                    app.purpose = purpose;
+                    app.remarks = "Modified by citizen, pending re-review.";
+                    app.status = "Submitted";
+                    saveState();
+                    showToast(`Application ${editId} successfully updated!`, "success");
+                }
+                cancelEditForm();
+            } else {
+                // Create new application
+                const newApp = {
+                    id: `NP-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+                    docType,
+                    fullName,
+                    email: currentUser.email,
+                    citizenshipNo,
+                    citizenshipStatus,
+                    mobileNo,
+                    district,
+                    wardNo,
+                    purpose,
+                    status: "Submitted",
+                    date: new Date().toISOString().replace('T', ' ').substring(0, 16),
+                    remarks: "Successfully submitted to Nagarik Sewa Kendra queue."
+                };
+
+                applications.unshift(newApp);
+                saveState();
+                showToast(`Application submitted successfully! ID: ${newApp.id}`, 'success');
+                document.getElementById('documentForm').reset();
+                updateCitizenshipField();
+                document.getElementById('wardNo').innerHTML = '<option value="">-- Select District/Local Level first --</option>';
+            }
+
+            updateStats();
+            renderAdminTable();
+            renderTrackerList();
+            switchCitizenTab('tracker');
+        }
+
+        // Populate Form for Editing (Citizen action)
+        function editApplication(id) {
+            const app = applications.find(a => a.id === id);
+            if(!app) return;
+
+            switchView('citizen');
+            switchCitizenTab('apply');
+
+            document.getElementById('editAppId').value = app.id;
+            document.getElementById('docType').value = app.docType;
+            document.getElementById('fullName').value = app.fullName;
+            document.getElementById('citizenshipNo').value = app.citizenshipNo;
+            document.getElementById('citizenshipStatus').value = app.citizenshipStatus || (String(app.citizenshipNo).includes('Parent') ? 'minor' : 'has');
+            updateCitizenshipField();
+            document.getElementById('citizenshipNo').value = app.citizenshipNo;
+            document.getElementById('mobileNo').value = app.mobileNo;
+            document.getElementById('district').value = app.district;
+            updateWardOptions();
+            document.getElementById('wardNo').value = app.wardNo;
+            document.getElementById('purpose').value = app.purpose;
+
+            document.getElementById('formWizardTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-nepalGold"></i> Modify Application (${app.id})`;
+            document.getElementById('formSubmitBtn').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Save Changes`;
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+        }
+
+        function cancelEditForm() {
+            document.getElementById('documentForm').reset();
+            document.getElementById('editAppId').value = '';
+            document.getElementById('formWizardTitle').innerHTML = `<i class="fa-solid fa-file-pen text-nepalGold"></i> Official Government Document Request Form / सरकारी कागजात अनुरोध फारम`;
+            document.getElementById('formSubmitBtn').innerHTML = `<i class="fa-solid fa-paper-plane"></i> Submit Application / आवेदन बुझाउनुहोस्`;
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+        }
+
+        // Update Statistics Counters & Revenue
+        function updateStats() {
+            const total = applications.length;
+            const pending = applications.filter(a => a.status === 'Submitted' || a.status === 'Under Review').length;
+            const approved = applications.filter(a => a.status === 'Approved').length;
+            const rejected = applications.filter(a => a.status === 'Rejected').length;
+            const revenue = approved * 500 + 14500; // Mock revenue calculation
+
+            if(document.getElementById('statTotal')) document.getElementById('statTotal').innerText = total;
+            if(document.getElementById('statPending')) document.getElementById('statPending').innerText = pending;
+            if(document.getElementById('statApproved')) document.getElementById('statApproved').innerText = approved;
+            if(document.getElementById('statGrievances')) document.getElementById('statGrievances').innerText = grievances.filter(g=>g.status==='Submitted'||g.status==='Under Review').length;
+
+            if(document.getElementById('adminStatTotal')) document.getElementById('adminStatTotal').innerText = total;
+            if(document.getElementById('adminStatPending')) document.getElementById('adminStatPending').innerText = pending;
+            if(document.getElementById('adminStatApproved')) document.getElementById('adminStatApproved').innerText = approved;
+            if(document.getElementById('adminStatRejected')) document.getElementById('adminStatRejected').innerText = rejected;
+
+            const userAppsCount = currentUser && currentUser.role === 'citizen' ? applications.filter(a => a.email === currentUser.email || a.fullName.toLowerCase() === currentUser.name.toLowerCase()).length : applications.length;
+            if(document.getElementById('trackerCount')) document.getElementById('trackerCount').innerText = userAppsCount;
+        }
+
+        // Render Admin Data Table
+        function renderAdminTable() {
+            const statusFilter = document.getElementById('filterStatus').value;
+            const districtFilter = document.getElementById('filterDistrict').value;
+            const searchQuery = document.getElementById('adminSearch').value.toLowerCase();
+            const tbody = document.getElementById('adminTableBody');
+            
+            tbody.innerHTML = '';
+
+            const filtered = applications.filter(app => {
+                const matchStatus = (statusFilter === 'ALL' || app.status === statusFilter);
+                const matchDistrict = (districtFilter === 'ALL' || app.district === districtFilter);
+                const matchSearch = app.fullName.toLowerCase().includes(searchQuery) || app.id.toLowerCase().includes(searchQuery);
+                return matchStatus && matchDistrict && matchSearch;
+            });
+
+            if(filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">No matching applications found.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(app => {
+                let badgeClass = "bg-amber-100 text-amber-800 border-amber-200";
+                if(app.status === 'Approved') badgeClass = "bg-emerald-100 text-emerald-800 border-emerald-200";
+                if(app.status === 'Rejected') badgeClass = "bg-red-100 text-red-800 border-red-200";
+                if(app.status === 'Under Review') badgeClass = "bg-sky-100 text-sky-800 border-sky-200";
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="py-4 px-6 font-mono text-xs font-bold text-nepalBlue">${app.id}</td>
+                    <td class="py-4 px-6 font-semibold text-slate-900">${app.fullName}</td>
+                    <td class="py-4 px-6 text-slate-700">${app.docType}</td>
+                    <td class="py-4 px-6 text-slate-600 text-xs">${app.district} (${app.wardNo})</td>
+                    <td class="py-4 px-6 text-slate-500 text-xs">${app.date}</td>
+                    <td class="py-4 px-6"><span class="px-3 py-1 rounded-full text-xs font-semibold border ${badgeClass}">${app.status}</span></td>
+                    <td class="py-4 px-6 text-center space-x-2">
+                        <button onclick="openModal('${app.id}')" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-semibold transition" title="Review Details"><i class="fa-solid fa-eye"></i></button>
+                        <button onclick="updateAppStatus('${app.id}', 'Under Review')" class="px-3 py-1.5 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-100 text-xs font-semibold transition" title="Start Review"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <button onclick="updateAppStatus('${app.id}', 'Approved')" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 text-xs font-semibold transition" title="Approve"><i class="fa-solid fa-check"></i></button>
+                        <button onclick="updateAppStatus('${app.id}', 'Rejected')" class="px-3 py-1.5 rounded-lg bg-red-50 text-nepalRed hover:bg-red-100 text-xs font-semibold transition" title="Reject"><i class="fa-solid fa-xmark"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Render Citizen Tracker List (User view: can view and modify pending)
+        function renderTrackerList() {
+            const container = document.getElementById('citizenApplicationsList');
+            const query = document.getElementById('searchTracker') ? document.getElementById('searchTracker').value.toLowerCase() : '';
+            container.innerHTML = '';
+
+            // Filter applications belonging to current user or all if admin
+            const userApps = currentUser && currentUser.role === 'citizen' 
+                ? applications.filter(app => app.email === currentUser.email)
+                : applications;
+
+            const filtered = userApps.filter(app => app.fullName.toLowerCase().includes(query) || app.id.toLowerCase().includes(query));
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-slate-400">No applications found. Your grievances, if any, are shown below.</div>`;
+            } else {
+            filtered.forEach(app => {
+                let badgeClass = "bg-amber-100 text-amber-800 border-amber-200";
+                if(app.status === 'Approved') badgeClass = "bg-emerald-100 text-emerald-800 border-emerald-200";
+                if(app.status === 'Rejected') badgeClass = "bg-red-100 text-red-800 border-red-200";
+                if(app.status === 'Under Review') badgeClass = "bg-sky-100 text-sky-800 border-sky-200";
+
+                const canModify = (app.status === 'Submitted' || app.status === 'Under Review');
+
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-slate-300 transition";
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-3">
+                            <span class="font-mono text-xs font-bold text-nepalBlue bg-white px-2.5 py-1 rounded-md border border-slate-200">${app.id}</span>
+                            <span class="px-3 py-0.5 rounded-full text-xs font-semibold border ${badgeClass}">${app.status}</span>
+                        </div>
+                        <h4 class="text-base font-bold text-slate-900 mt-2">${app.docType}</h4>
+                        <p class="text-xs text-slate-500">Applicant: <strong>${app.fullName}</strong> | District: ${app.district}, ${app.wardNo}</p>
+                        <p class="text-xs text-slate-500">Purpose: ${app.purpose}</p>
+                        <p class="text-xs text-slate-400 italic">Officer Remarks: "${app.remarks}"</p>
+                    </div>
+                    <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                        ${canModify ? `
+                            <button onclick="editApplication('${app.id}')" class="px-4 py-2 rounded-xl bg-amber-500 text-white text-xs font-bold shadow hover:bg-amber-600 transition flex items-center gap-2">
+                                <i class="fa-solid fa-pen-to-square"></i> Modify Application
+                            </button>
+                        ` : ''}
+                        ${app.status === 'Approved' ? `
+                            <button onclick="openCertificateModal('${app.id}')" class="px-4 py-2 rounded-xl bg-nepalRed text-white text-xs font-bold shadow hover:bg-red-700 transition flex items-center gap-2">
+                                <i class="fa-solid fa-certificate"></i> View Digital Certificate
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            }
+            renderGrievanceTracker();
+        }
+
+        function filterTracker() {
+            renderTrackerList();
+        }
+
+        // Grievance submission and management
+        function handleGrievanceSubmit(e) {
+            e.preventDefault();
+            if(!currentUser || currentUser.role !== 'citizen') {
+                openAuthModal('citizen');
+                showToast('Please login as a citizen before submitting a grievance.', 'error');
+                return;
+            }
+
+            const subject = esc(document.getElementById('grievanceSubject').value.trim());
+            const description = esc(document.getElementById('grievanceDescription').value.trim());
+            const category = document.getElementById('grievanceCategory').value;
+            const service = document.getElementById('grievanceService').value;
+            const district = document.getElementById('grievanceDistrict').value;
+            const ward = esc(document.getElementById('grievanceWard').value.trim()) || 'Not specified';
+
+            if(subject.length < 5 || description.length < 10) {
+                showToast('Please provide a clear subject and sufficient grievance details.', 'error');
+                return;
+            }
+
+            const grievance = {
+                id: `GR-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+                email: currentUser.email,
+                fullName: currentUser.name,
+                category, service, subject, description, district, ward,
+                status: 'Submitted',
+                date: new Date().toISOString().replace('T', ' ').substring(0, 16),
+                response: 'Grievance received and waiting for administrative review.'
+            };
+            grievances.unshift(grievance);
+            saveState();
+            document.getElementById('grievanceForm').reset();
+            renderGrievanceAdmin();
+            renderTrackerList();
+            showToast(`Grievance submitted successfully! ID: ${grievance.id}`, 'success');
+            document.getElementById('publicTrackId').value = grievance.id;
+            switchView('tracking');
+            trackPublicRequest();
+        }
+
+        function updateGrievanceStatus(id, status) {
+            const grievance = grievances.find(g => g.id === id);
+            if(!grievance) return;
+            grievance.status = status;
+            grievance.response = status === 'Resolved' ? 'The grievance has been reviewed and marked as resolved.' :
+                                 status === 'Rejected' ? 'The grievance was reviewed but could not be accepted under the current workflow.' :
+                                 'The grievance is currently under administrative review.';
+            saveState();
+            renderGrievanceAdmin();
+            renderTrackerList();
+            showToast(`Grievance ${id} updated to ${status}.`, status === 'Rejected' ? 'error' : 'success');
+        }
+
+        function renderGrievanceAdmin() {
+            const body = document.getElementById('grievanceAdminBody');
+            if(!body) return;
+            const filter = document.getElementById('grievanceAdminFilter')?.value || 'ALL';
+            const rows = grievances.filter(g => filter === 'ALL' || g.status === filter);
+            body.innerHTML = '';
+            if(!rows.length) {
+                body.innerHTML = '<tr><td colspan="6" class="py-8 px-6 text-center text-slate-400">No grievances found.</td></tr>';
+                return;
+            }
+            rows.forEach(g => {
+                const badge = g.status === 'Resolved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : g.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-200' : g.status === 'Under Review' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-blue-50 text-blue-700 border-blue-200';
+                body.insertAdjacentHTML('beforeend', `
+                    <tr class="hover:bg-slate-50">
+                        <td class="py-4 px-6 font-mono text-xs font-bold text-nepalBlue">${g.id}</td>
+                        <td class="py-4 px-6"><strong>${g.subject}</strong><div class="text-[11px] text-slate-400">${g.fullName}</div></td>
+                        <td class="py-4 px-6 text-xs">${g.category}</td>
+                        <td class="py-4 px-6 text-xs">${g.district}, ${g.ward}</td>
+                        <td class="py-4 px-6"><span class="px-2.5 py-1 rounded-full border text-xs font-semibold ${badge}">${g.status}</span></td>
+                        <td class="py-4 px-6 text-center"><div class="flex justify-center gap-2"><button onclick="updateGrievanceStatus('${g.id}','Under Review')" class="text-xs px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 font-semibold">Review</button><button onclick="updateGrievanceStatus('${g.id}','Resolved')" class="text-xs px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 font-semibold">Resolve</button><button onclick="updateGrievanceStatus('${g.id}','Rejected')" class="text-xs px-3 py-1.5 rounded-lg bg-red-50 text-red-700 font-semibold">Reject</button></div></td></div></td>
+                    </tr>`);
+            });
+        }
+
+        function renderGrievanceTracker() {
+            const container = document.getElementById('citizenApplicationsList');
+            if(!container || !currentUser) return;
+            const own = grievances.filter(g => g.email === currentUser.email);
+            if(!own.length) return;
+            own.forEach(g => {
+                const badge = g.status === 'Resolved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : g.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-blue-50 text-blue-700 border-blue-200';
+                const card = document.createElement('div');
+                card.className = 'bg-red-50/30 p-5 rounded-2xl border border-red-100';
+                card.innerHTML = `<div class="flex flex-wrap justify-between gap-3"><div><span class="font-mono text-xs font-bold text-nepalRed">${g.id}</span><h4 class="font-bold text-slate-900 mt-2">${g.subject}</h4><p class="text-xs text-slate-500 mt-1">${g.category} • ${g.district}, ${g.ward}</p></div><span class="px-3 py-1 rounded-full border text-xs font-semibold h-fit ${badge}">${g.status}</span></div><p class="text-xs text-slate-600 mt-3">${g.description}</p><p class="text-xs text-slate-500 mt-3"><strong>Administrative response:</strong> ${g.response}</p>`;
+                container.appendChild(card);
+            });
+        }
+
+        function trackPublicRequest() {
+            const id = document.getElementById('publicTrackId')?.value.trim().toUpperCase();
+            const result = document.getElementById('publicTrackingResult');
+            if(!result) return;
+            if(!id) { result.innerHTML = '<p class="text-center text-sm text-slate-500">Enter a reference number to track a request.</p>'; return; }
+            const app = applications.find(a => a.id.toUpperCase() === id);
+            const grievance = grievances.find(g => g.id.toUpperCase() === id);
+            const item = app || grievance;
+            if(!item) { result.innerHTML = '<div class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl text-sm">No request was found for this reference number.</div>'; return; }
+            const isGrievance = !!grievance;
+            const status = item.status;
+            result.innerHTML = `<div class="bg-slate-50 border border-slate-200 rounded-2xl p-6"><div class="flex flex-wrap justify-between gap-4"><div><span class="font-mono text-xs font-bold text-nepalBlue">${item.id}</span><h3 class="text-lg font-bold text-slate-900 mt-2">${isGrievance ? item.subject : item.docType}</h3><p class="text-xs text-slate-500 mt-1">${isGrievance ? 'Grievance' : 'Service Application'} • ${item.fullName}</p></div><span class="px-3 py-1 rounded-full bg-white border border-slate-300 text-xs font-bold">${status}</span></div><div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6 text-xs"><div class="bg-white p-3 rounded-xl border border-slate-200"><span class="text-slate-400 block">Submitted</span><strong>${item.date}</strong></div><div class="bg-white p-3 rounded-xl border border-slate-200"><span class="text-slate-400 block">Location</span><strong>${item.district}${isGrievance ? ', ' + item.ward : ', ' + item.wardNo}</strong></div><div class="bg-white p-3 rounded-xl border border-slate-200"><span class="text-slate-400 block">Current Status</span><strong>${status}</strong></div></div>${timelineHTML(status, isGrievance)}${isGrievance ? `<div class="mt-4 p-4 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900"><strong>Administrative response:</strong> ${item.response}</div>` : `<div class="mt-4 p-4 rounded-xl bg-white border border-slate-200 text-xs text-slate-600"><strong>Officer remarks:</strong> ${item.remarks}</div>`}</div>`;
+        }
+
+        function showOfficeInfo() {
+            const district = document.getElementById('officeDistrict')?.value;
+            const box = document.getElementById('officeInfo');
+            if(!box) return;
+            const offices = {
+                'Kathmandu': ['Kathmandu Metropolitan City Office', 'Kathmandu, Ward 1'],
+                'Lalitpur': ['Lalitpur Metropolitan Office', 'Lalitpur Metropolitan City'],
+                'Bhaktapur': ['Bhaktapur Municipal Office', 'Bhaktapur'],
+                'Pokhara (Kaski)': ['Pokhara Metropolitan City Office', 'Pokhara, Kaski'],
+                'Butwal (Rupandehi)': ['Butwal Sub-Metropolitan Office', 'Butwal, Rupandehi'],
+                'Chitwan': ['Bharatpur Metropolitan City Office', 'Chitwan'],
+                'Jhapa': ['District Administration / Local Service Office', 'Jhapa'],
+                'Morang': ['Biratnagar Metropolitan / Local Service Office', 'Morang'],
+                'Kailali': ['Dhangadhi Sub-Metropolitan / Local Service Office', 'Kailali']
+            };
+            if(!district) { box.innerHTML = '<p class="text-xs text-slate-400">Select a district to view the prototype office reference.</p>'; return; }
+            const office = offices[district] || ['Local Service Office', district];
+            box.innerHTML = `<div class="bg-slate-50 border border-slate-200 rounded-xl p-5 flex flex-col sm:flex-row justify-between gap-4"><div><h4 class="font-bold text-slate-900">${office[0]}</h4><p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-location-dot text-nepalRed mr-1"></i>${office[1]}</p></div><span class="text-xs px-3 py-1.5 h-fit rounded-lg bg-blue-50 text-blue-700 border border-blue-200">Prototype reference</span></div>`;
+        }
+
+        // Update Application Status from Admin
+        function updateAppStatus(id, newStatus) {
+            const app = applications.find(a => a.id === id);
+            if(app) {
+                app.status = newStatus;
+                app.remarks = newStatus === 'Approved' ? 'Verified by municipal officer. Sample certificate available (prototype).' : newStatus === 'Under Review' ? 'Application is under officer review.' : 'Rejected due to insufficient or incorrect paperwork.';
+                saveState();
+                updateStats();
+                renderAdminTable();
+                renderGrievanceAdmin();
+                renderTrackerList();
+                showToast(`Application ${id} status updated to ${newStatus}`, newStatus === 'Rejected' ? 'error' : 'success');
+            }
+        }
+
+        // Modal Controls for Admin Review
+        function openModal(id) {
+            const app = applications.find(a => a.id === id);
+            if(!app) return;
+
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <div class="grid grid-cols-2 gap-4 text-sm bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div><span class="text-slate-500 text-xs block">Application ID</span><strong class="font-mono text-nepalBlue">${app.id}</strong></div>
+                    <div><span class="text-slate-500 text-xs block">Current Status</span><strong class="text-slate-900">${app.status}</strong></div>
+                    <div><span class="text-slate-500 text-xs block">Document Service</span><strong class="text-slate-900">${app.docType}</strong></div>
+                    <div><span class="text-slate-500 text-xs block">Submission Date</span><strong class="text-slate-900">${app.date}</strong></div>
+                </div>
+
+                <div class="space-y-3">
+                    <h4 class="font-bold text-slate-900 text-sm">Applicant Personal Information</h4>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div><span class="text-slate-500 text-xs block">Full Name</span><strong>${app.fullName}</strong></div>
+                        <div><span class="text-slate-500 text-xs block">Citizenship Number</span><strong>${app.citizenshipNo}</strong></div>
+                        <div><span class="text-slate-500 text-xs block">Mobile Number</span><strong>${app.mobileNo}</strong></div>
+                        <div><span class="text-slate-500 text-xs block">Location</span><strong>${app.district}, ${app.wardNo}</strong></div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-900 text-sm">Purpose & Remarks</h4>
+                    <p class="text-xs bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-700">${app.purpose}</p>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-900 text-sm">Officer Verification Notes</h4>
+                    <input type="text" id="modalRemarksInput" value="${app.remarks}" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-nepalBlue">
+                </div>
+            `;
+
+            const modalFooter = document.getElementById('modalFooter');
+            modalFooter.innerHTML = `
+                <button onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-semibold">Cancel</button>
+                <button onclick="saveModalRemarks('${app.id}', 'Rejected')" class="px-4 py-2 rounded-xl bg-red-50 text-nepalRed hover:bg-red-100 text-xs font-bold">Reject</button>
+                <button onclick="saveModalRemarks('${app.id}', 'Approved')" class="px-4 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 text-xs font-bold">Approve & Issue</button>
+            `;
+
+            document.getElementById('requestModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('requestModal').classList.add('hidden');
+        }
+
+        function saveModalRemarks(id, status) {
+            const app = applications.find(a => a.id === id);
+            const remarksInput = document.getElementById('modalRemarksInput').value;
+            if(app) {
+                app.status = status;
+                app.remarks = remarksInput;
+                saveState();
+                updateStats();
+                renderAdminTable();
+                renderTrackerList();
+                closeModal();
+                showToast(`Application ${id} updated to ${status}!`, status === 'Approved' ? 'success' : 'error');
+            }
+        }
+
+        // Digital Certificate Modal (Verified Certificate view)
+        function openCertificateModal(id) {
+            const app = applications.find(a => a.id === id);
+            if(!app) return;
+
+            const body = document.getElementById('certificateBody');
+            body.innerHTML = `
+                <div class="bg-white p-8 rounded-2xl shadow-sm border-4 border-nepalRed/20 max-w-2xl mx-auto space-y-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-nepalRed text-white text-[10px] font-bold px-4 py-1 rounded-bl-xl uppercase tracking-widest">Sample - Not Official</div>
+                    
+                    <div class="text-center space-y-2 border-b border-slate-200 pb-6">
+                        <div class="w-16 h-16 rounded-full bg-nepalRed text-white mx-auto flex items-center justify-center text-3xl shadow">
+                            <i class="fa-solid fa-landmark"></i>
+                        </div>
+                        <h2 class="text-xl font-extrabold text-slate-900">Nagarik Sewa Kendra (Sample)</h2>
+                        <p class="text-xs text-slate-500">Ministry of Federal Affairs and General Administration</p>
+                        <p class="text-xs font-bold text-nepalBlue uppercase tracking-wider">Nagarik Sewa Kendra • Digital Certificate Unit</p>
+                    </div>
+
+                    <p class="text-center text-[10px] font-bold text-red-600 tracking-widest">ACADEMIC PROTOTYPE - NOT A LEGAL DOCUMENT</p><div class="text-center py-2">
+                        <h3 class="text-lg font-bold text-slate-800 uppercase tracking-wide underline decoration-nepalRed underline-offset-8">${app.docType}</h3>
+                        <p class="text-xs text-slate-400 mt-2 font-mono">Certificate Ref No: ${app.id}</p>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2">
+                        <div class="flex justify-between"><span class="text-slate-500">Recipient Name:</span><strong class="text-slate-900">${app.fullName}</strong></div>
+                        <div class="flex justify-between"><span class="text-slate-500">Citizenship No.:</span><strong class="text-slate-900">${app.citizenshipNo}</strong></div>
+                        <div class="flex justify-between"><span class="text-slate-500">Issued Location:</span><strong class="text-slate-900">${app.district}, ${app.wardNo}</strong></div>
+                        <div class="flex justify-between"><span class="text-slate-500">Issue Timestamp:</span><strong class="text-slate-900">${app.date}</strong></div>
+                        <div class="flex justify-between"><span class="text-slate-500">Verification Status:</span><strong class="text-emerald-600"><i class="fa-solid fa-circle-check"></i> Approved (Prototype)</strong></div>
+                    </div>
+
+                    <div class="flex justify-between items-end pt-4 border-t border-slate-200 text-xs text-slate-500">
+                        <div>
+                            <p class="font-bold text-slate-800">Authorized Officer</p>
+                            <p class="text-[10px]">Govt. Digital Registry Division</p>
+                            <p class="font-mono text-[9px] text-nepalBlue mt-1">Prototype reference only</p>
+                        </div>
+                        <div class="w-16 h-16 bg-slate-900 text-white rounded-lg flex items-center justify-center text-center p-1 text-[8px] font-mono">
+                            [ QR ]<br>SAMPLE
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('certificateModal').classList.remove('hidden');
+        }
+
+        function closeCertificateModal() {
+            document.getElementById('certificateModal').classList.add('hidden');
+        }
+
+        function printCertificate() {
+            window.print();
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Toast Notification System
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white';
+            const icon = type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation';
+
+            toast.className = `${bgClass} px-6 py-3 rounded-xl shadow-xl flex items-center gap-3 text-sm font-semibold pointer-events-auto animate-fade-in transition duration-300`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => { setTimeout(applyLanguage, 50); });
+</script>
+</body>
+</html>
