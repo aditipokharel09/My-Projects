@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+body {
+    font-family: 'Inter', sans-serif;
+}
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+#modal-content { max-height: 92vh; overflow-y: auto; }
+
+/* Print only the receipt when printing from the POS */
+@media print {
+    body.print-receipt * { visibility: hidden; }
+    body.print-receipt #modal-content, body.print-receipt #modal-content * { visibility: visible; }
+    body.print-receipt #modal-content { position: absolute; left: 0; top: 0; width: 100%; max-height: none; box-shadow: none; border: 0; }
+    .no-print { display: none !important; }
+}

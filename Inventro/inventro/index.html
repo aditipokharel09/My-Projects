@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventro - An Inventory Sales System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="js/tailwind-config.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <div id="app-root" class="flex-1 flex flex-col">
+        
+        <!-- ================= LOGIN VIEW ================= -->
+        <div id="login-view" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-inventro-950 via-inventro-900 to-slate-900">
+            <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
+                <div class="bg-inventro-950 p-8 text-center text-white relative">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-inventro-800 text-inventro-100 mb-3 shadow-inner">
+                        <i class="fa-solid fa-boxes-stacked text-3xl"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold tracking-tight">Inventro</h1>
+                    <p class="text-xs text-inventro-200 mt-1 uppercase tracking-wider font-medium">An Inventory Sales System</p>
+                </div>
+
+                <div class="p-8 space-y-6">
+                    <!-- Quick Demo Login Buttons -->
+                    <div class="bg-inventro-50 p-4 rounded-xl border border-inventro-100">
+                        <p class="text-xs font-semibold text-inventro-900 mb-2 uppercase tracking-wide">Quick Demo Access:</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="fillDemoCredentials('admin')" class="px-3 py-2 text-xs font-medium bg-inventro-900 hover:bg-inventro-800 text-white rounded-lg shadow-sm transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-user-shield"></i> Admin Demo
+                            </button>
+                            <button onclick="fillDemoCredentials('staff')" class="px-3 py-2 text-xs font-medium bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-user-tie"></i> Staff Demo
+                            </button>
+                        </div>
+                    </div>
+
+                    <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Email Address / Username</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </span>
+                                <input type="text" id="login-username" required class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-800 focus:outline-none focus:border-inventro-600 focus:ring-2 focus:ring-inventro-100 transition" placeholder="admin@inventro.com">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                    <i class="fa-solid fa-lock"></i>
+                                </span>
+                                <input type="password" id="login-password" required class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-800 focus:outline-none focus:border-inventro-600 focus:ring-2 focus:ring-inventro-100 transition" placeholder="••••••••">
+                            </div>
+                        </div>
+                        <div id="login-error" class="hidden text-xs text-rose-600 bg-rose-50 p-3 rounded-xl border border-rose-200 font-medium"></div>
+                        <button type="submit" class="w-full py-3 bg-inventro-900 hover:bg-inventro-800 text-white font-semibold rounded-xl shadow-lg shadow-inventro-900/20 transition duration-200 text-sm">
+                            Sign In to System
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MAIN DASHBOARD VIEW ================= -->
+        <div id="main-view" class="hidden flex-1 flex h-screen overflow-hidden">
+            <!-- Left Sidebar Navigation (Dark Green) -->
+            <aside class="w-64 bg-inventro-950 text-slate-200 flex flex-col z-20 shadow-xl">
+                <!-- Brand Header -->
+                <div class="h-16 flex items-center px-6 gap-3 border-b border-inventro-900 bg-inventro-950">
+                    <div class="w-10 h-10 rounded-xl bg-inventro-800 text-white flex items-center justify-center font-bold text-lg shadow-md">
+                        <i class="fa-solid fa-cubes"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-sm tracking-wide text-white">Inventro</h1>
+                        <p class="text-[10px] text-inventro-300 font-medium">Inventory & Sales System</p>
+                    </div>
+                </div>
+
+                <!-- Nav Links -->
+                <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+                    <button onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-300 hover:bg-inventro-900 hover:text-white" data-tab="dashboard">
+                        <i class="fa-solid fa-chart-pie w-5 text-center text-inventro-400"></i> Dashboard
+                    </button>
+                    <button onclick="switchTab('products')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-300 hover:bg-inventro-900 hover:text-white" data-tab="products">
+                        <i class="fa-solid fa-box-open w-5 text-center text-inventro-400"></i> Products
+                    </button>
+                    <button onclick="switchTab('inventory')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-300 hover:bg-inventro-900 hover:text-white" data-tab="inventory">
+                        <i class="fa-solid fa-warehouse w-5 text-center text-inventro-400"></i> Inventory
+                    </button>
+                    <button onclick="switchTab('pos')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-300 hover:bg-inventro-900 hover:text-white" data-tab="pos">
+                        <i class="fa-solid fa-cash-register w-5 text-center text-inventro-400"></i> Sales / POS
+                    </button>
+                    <button onclick="switchTab('customers')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-300 hover:bg-inventro-900 hover:text-white" data-tab="customers">
+                        <i class="fa-solid fa-users w-5 text-center text-inventro-400"></i> Customers
+                    </button>
+                    <button onclick="switchTab('suppliers')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-300 hover:bg-inventro-900 hover:text-white" data-tab="suppliers">
+                        <i class="fa-solid fa-truck-field w-5 text-center text-inventro-400"></i> Suppliers
+                    </button>
+                    <button onclick="switchTab('reports')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-300 hover:bg-inventro-900 hover:text-white" data-tab="reports">
+                        <i class="fa-solid fa-chart-line w-5 text-center text-inventro-400"></i> Reports
+                    </button>
+                    <button id="nav-users" onclick="switchTab('users')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-300 hover:bg-inventro-900 hover:text-white" data-tab="users">
+                        <i class="fa-solid fa-user-gear w-5 text-center text-inventro-400"></i> Users <span class="ml-auto text-[9px] bg-inventro-800 text-inventro-100 px-1.5 py-0.5 rounded font-bold uppercase">Admin</span>
+                    </button>
+                    <button onclick="switchTab('settings')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition text-slate-300 hover:bg-inventro-900 hover:text-white" data-tab="settings">
+                        <i class="fa-solid fa-gear w-5 text-center text-inventro-400"></i> Settings
+                    </button>
+                </nav>
+
+                <!-- User Profile & Logout Footer -->
+                <div class="p-4 border-t border-inventro-900 bg-inventro-950/80 flex items-center justify-between">
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <div id="user-avatar" class="w-9 h-9 rounded-full bg-inventro-800 text-inventro-100 flex items-center justify-center font-bold text-sm shrink-0">
+                            A
+                        </div>
+                        <div class="overflow-hidden">
+                            <p id="user-name-display" class="text-xs font-semibold text-white truncate">Admin User</p>
+                            <p id="user-role-display" class="text-[10px] text-inventro-300 font-medium uppercase truncate">Administrator</p>
+                        </div>
+                    </div>
+                    <button onclick="handleLogout()" title="Logout" class="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-950/30 rounded-lg transition shrink-0">
+                        <i class="fa-solid fa-right-from-bracket text-base"></i>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Main Content Area (Clean White Background) -->
+            <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-100">
+                <!-- Top Header Bar -->
+                <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between z-10 shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <h2 id="page-title" class="text-lg font-bold text-slate-800 tracking-wide">Dashboard Overview</h2>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span id="current-date-time" class="text-xs text-slate-500 hidden sm:inline-block font-medium"></span>
+                        <button onclick="switchTab('pos')" class="px-4 py-2 bg-inventro-900 hover:bg-inventro-800 text-white font-medium text-xs rounded-xl shadow-md transition flex items-center gap-2">
+                            <i class="fa-solid fa-cash-register"></i> Open POS
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Dynamic View Container -->
+                <main id="content-container" class="flex-1 overflow-y-auto p-6 space-y-6">
+                    <!-- Tab contents injected dynamically -->
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Modal Container -->
+    <div id="global-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+        <div id="modal-content" class="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden transform transition-all border border-slate-200">
+            <!-- Modal content injected dynamically -->
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    
+    <script src="js/data.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/products.js"></script>
+    <script src="js/inventory.js"></script>
+    <script src="js/pos.js"></script>
+    <script src="js/customers.js"></script>
+    <script src="js/suppliers.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/users.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
